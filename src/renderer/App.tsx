@@ -1,40 +1,89 @@
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import icon from '../../assets/icon.svg';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Button, Input, Divider, Tag } from 'antd';
+import { MemoryRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
+import axios from 'axios';
+import { ChangeEvent, useEffect, useState } from 'react';
+import constants from '../lib/constants';
 
-const Hello = () => {
+const { characterRankings } = constants;
+
+const host = 'http://127.0.0.1:5000';
+
+const Core = () => {
+  const [characterPredictions, setCharacterPredictions] = useState([]);
+  const [wordPredictions, setWordPredictions] = useState([]);
+  const [inputData, setInputData] = useState('');
+  const predictNextCharacter = async () => {
+    const text = `${host}?text=${inputData.length > 0 ? inputData : ''}`;
+    console.log({ request: text });
+    axios
+      .get(text)
+      .then((res) => {
+        const { nextCharactersRanked, wordList } = res.data;
+
+        // console.log({ wordList });
+
+        setCharacterPredictions(nextCharactersRanked);
+        setWordPredictions(wordList);
+
+        return res;
+      })
+      .catch((res) => {
+        console.error(res);
+      });
+  };
+
+  useEffect(() => {
+    predictNextCharacter();
+  }, [inputData]);
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setInputData(e.target.value);
+  };
+
   return (
     <div>
-      <div className="Hello">
-        <img width="200" alt="icon" src={icon} />
+      <Input value={inputData} size="large" onChange={handleInputChange} />
+      <Divider />
+      {wordPredictions.map((i: any) => (
+        <Tag onClick={() => setInputData(i.sequence.replace('.', ''))}>
+          {i.sequence.replace('.', '')}
+        </Tag>
+      ))}
+      <Divider />
+      <div className="button-container">
+        {inputData.length < 2
+          ? Object.keys(characterRankings).map((i) => (
+              <div key={`_${i}`} className="button-box">
+                <Button
+                  onClick={() => {
+                    const text = `${inputData}${i}`;
+                    setInputData(text);
+                  }}
+                  type="primary"
+                  size="large"
+                >
+                  {i}
+                </Button>
+              </div>
+            ))
+          : characterPredictions.map((i: any) => (
+              <div key={`_${i.char}`} className="button-box">
+                <Button
+                  onClick={() => {
+                    const text = `${inputData}${i.char}`;
+                    setInputData(text);
+                  }}
+                  type="primary"
+                  size="large"
+                >
+                  {i.char}
+                </Button>
+              </div>
+            ))}
       </div>
-      <h1>electron-react-boilerplate</h1>
-      <div className="Hello">
-        <a
-          href="https://electron-react-boilerplate.js.org/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              📚
-            </span>
-            Read our docs
-          </button>
-        </a>
-        <a
-          href="https://github.com/sponsors/electron-react-boilerplate"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="folded hands">
-              🙏
-            </span>
-            Donate
-          </button>
-        </a>
-      </div>
+      <Divider />
     </div>
   );
 };
@@ -43,7 +92,7 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Hello />} />
+        <Route path="/" element={<Core />} />
       </Routes>
     </Router>
   );
