@@ -3,7 +3,7 @@ import { Button, Input, Divider, Tag } from 'antd';
 import { MemoryRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
 import axios from 'axios';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState, useRef } from 'react';
 import constants from '../lib/constants';
 
 const { characterRankings } = constants;
@@ -14,6 +14,7 @@ const Core = () => {
   const [characterPredictions, setCharacterPredictions] = useState([]);
   const [wordPredictions, setWordPredictions] = useState([]);
   const [inputData, setInputData] = useState('');
+  const buttonTest = useRef<HTMLInputElement>(null)
   const predictNextCharacter = async () => {
     const text = `${host}?text=${inputData.length > 0 ? inputData : ''}`;
     console.log({ request: text });
@@ -52,7 +53,7 @@ const Core = () => {
         </Tag>
       ))}
       <Divider />
-      <div className="button-container">
+      <div ref={buttonTest} className="button-container">
         {inputData.length < 2
           ? Object.keys(characterRankings).map((i) => (
               <div key={`_${i}`} className="button-box">
