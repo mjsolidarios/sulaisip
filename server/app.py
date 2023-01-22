@@ -24,14 +24,20 @@ character_rankings = json.load(f)
 f.close()
 
 
-@app.route("/")
+@app.route("/",  methods=['GET', 'POST'])
 def recommend():
-    text = request.args.get('text')
-    html = ""
-    if str(text) == "None":
-        res = generator(' <mask>.')
+    if request.method == 'POST':
+      _text = request.form['text']
     else:
-        res = generator(text + ' <mask>.')
+      _text = request.args.get('text')
+
+    html = ""
+    if str(_text) == "None":
+        res = generator(' <mask>.')
+        print("request: none")
+    else:
+        res = generator(_text + ' <mask>.')
+        print("request:"+_text)
     string_group = ""
 
     for i in res:

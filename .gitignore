@@ -30,3 +30,5 @@ npm-debug.log.*
 
 server/venv
 server/__pycache__
+
+app/.import
