@@ -8,6 +8,10 @@ import constants from '../lib/constants';
 
 const { characterRankings } = constants;
 
+const clickEvent = new MouseEvent('click', {
+  button: 0,
+})
+
 const host = 'http://127.0.0.1:5000';
 
 const Core = () => {
@@ -33,6 +37,12 @@ const Core = () => {
       .catch((res) => {
         console.error(res);
       });
+
+
+
+      buttonTest.current?.children[0].firstChild?.dispatchEvent(clickEvent)
+
+      console.log( buttonTest.current?.children[0].firstChild)
   };
 
   useEffect(() => {

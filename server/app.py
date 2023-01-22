@@ -1,4 +1,3 @@
-import types
 import json
 from flask_cors import CORS
 from flask import Flask, request
@@ -29,7 +28,7 @@ f.close()
 def recommend():
     text = request.args.get('text')
     html = ""
-    if types.NoneType == type(text):
+    if str(text) == "None":
         res = generator(' <mask>.')
     else:
         res = generator(text + ' <mask>.')
