@@ -40,7 +40,9 @@ func _predict_next_character():
 func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 	print(result)
 	var json = JSON.parse(body.get_string_from_utf8())	
-	print(json.result)
+	print(json.result['nextCharacters'])
+	print(json.result['stringGroup'])
+	print(json.result['wordList'])
 
 
 func _on_Button_pressed():
