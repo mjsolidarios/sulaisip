@@ -33,13 +33,13 @@ func _predict_next_character():
 	if current_text.length()>0:
 		# print("current_text.length(): "+str(current_text.length()))
 		# print(query)
-		$HTTPRequest.request(url, headers, use_ssl, HTTPClient.METHOD_POST, to_json(query))
+		$HTTPRequest.request(url, headers, false, HTTPClient.METHOD_POST, to_json(query))
 	else:
 		$HTTPRequest.request(url)
 
 func _on_HTTPRequest_request_completed(result, response_code, headers, body):
-	var json = JSON.parse(body.get_string_from_utf8())
 	print(result)
+	var json = JSON.parse(body.get_string_from_utf8())	
 	print(json.result)
 
 
