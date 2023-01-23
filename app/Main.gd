@@ -18,7 +18,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	Input.warp_mouse_position(Vector2(0,0))
+	pass
 	
 func _add_text_to_input(var character):
 	$VBoxContainer/TextEdit.text += character
