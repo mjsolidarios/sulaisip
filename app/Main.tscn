@@ -16,11 +16,23 @@ margin_bottom = 30.0
 rect_min_size = Vector2( 0, 30 )
 caret_blink = true
 
-[node name="GridContainer" type="GridContainer" parent="VBoxContainer"]
+[node name="TextSuggestions" type="GridContainer" parent="VBoxContainer"]
 margin_top = 34.0
 margin_right = 1024.0
 margin_bottom = 34.0
+columns = 5
+
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer"]
+margin_top = 38.0
+margin_right = 1024.0
+margin_bottom = 38.0
 columns = 6
+
+[node name="Button" type="Button" parent="VBoxContainer"]
+margin_top = 42.0
+margin_right = 1024.0
+margin_bottom = 62.0
+text = "Text"
 
 [node name="HTTPRequest" type="HTTPRequest" parent="."]
 
