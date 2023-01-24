@@ -1,6 +1,16 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
+[ext_resource path="res://fonts/Roboto-Regular.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://components/CharacterButton.tscn" type="PackedScene" id=3]
+
+[sub_resource type="DynamicFont" id=1]
+size = 37
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 22
+font_data = ExtResource( 2 )
 
 [node name="Control" type="Control"]
 anchor_right = 1.0
@@ -12,28 +22,65 @@ anchor_right = 1.0
 
 [node name="TextEdit" type="TextEdit" parent="VBoxContainer"]
 margin_right = 1024.0
-margin_bottom = 30.0
-rect_min_size = Vector2( 0, 30 )
+margin_bottom = 60.0
+rect_min_size = Vector2( 0, 60 )
+custom_fonts/font = SubResource( 1 )
 caret_blink = true
 
-[node name="TextSuggestions" type="GridContainer" parent="VBoxContainer"]
-margin_top = 34.0
+[node name="TextSuggestions" type="HBoxContainer" parent="VBoxContainer"]
+margin_top = 64.0
 margin_right = 1024.0
-margin_bottom = 34.0
-columns = 5
+margin_bottom = 64.0
 
-[node name="GridContainer" type="GridContainer" parent="VBoxContainer"]
-margin_top = 38.0
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+margin_top = 68.0
 margin_right = 1024.0
-margin_bottom = 38.0
+margin_bottom = 148.0
+
+[node name="CharacterButton" parent="VBoxContainer/HBoxContainer" instance=ExtResource( 3 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 508.0
+margin_bottom = 80.0
+text = "<"
+
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/HBoxContainer"]
+margin_left = 512.0
+margin_right = 512.0
+margin_bottom = 80.0
 columns = 6
 
-[node name="Button" type="Button" parent="VBoxContainer"]
-margin_top = 42.0
+[node name="CharacterButton2" parent="VBoxContainer/HBoxContainer" instance=ExtResource( 3 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 516.0
 margin_right = 1024.0
-margin_bottom = 62.0
+margin_bottom = 80.0
+text = ">"
+
+[node name="Buttontest" type="Button" parent="VBoxContainer"]
+visible = false
+margin_top = 152.0
+margin_right = 1024.0
+margin_bottom = 172.0
 text = "Text"
+
+[node name="Control" type="Control" parent="VBoxContainer"]
+margin_top = 152.0
+margin_right = 1024.0
+margin_bottom = 167.0
+rect_min_size = Vector2( 0, 15 )
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+margin_top = 171.0
+margin_right = 1024.0
+margin_bottom = 198.0
+custom_fonts/font = SubResource( 2 )
+text = "Sulaisip: Thought-to-text Tagalog BCI"
+align = 1
+valign = 1
 
 [node name="HTTPRequest" type="HTTPRequest" parent="."]
 
+[connection signal="pressed" from="VBoxContainer/Buttontest" to="." method="_on_Buttontest_pressed"]
 [connection signal="request_completed" from="HTTPRequest" to="." method="_on_HTTPRequest_request_completed"]

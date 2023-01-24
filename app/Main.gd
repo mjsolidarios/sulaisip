@@ -3,18 +3,19 @@ extends Control
 var file = File.new()
 var data
 var character_frequency_data:Dictionary
+var CharacterButton = preload("res://components/CharacterButton.tscn")
 
 func _ready():
 	file.open("res://data/character_rankings.json", File.READ)
 	character_frequency_data = parse_json(file.get_as_text())
 	
-	for i in character_frequency_data.keys():
-		var button = Button.new()
+	for i in character_frequency_data.keys().slice(0,5):
+		var button = CharacterButton.instance()
 		button.text = i
-		button.connect("pressed", self, "_add_text_to_input", [i])
-		$VBoxContainer/GridContainer.add_child(button)
-	
-	$VBoxContainer/Button.emit_signal("gui_input")
+		button.rect_size = Vector2(90,80)
+		button.get_node("TextureButton").connect("pressed", self, "_add_text_to_input", [i])
+		$VBoxContainer/HBoxContainer/GridContainer.add_child(button)
+
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -51,11 +52,16 @@ func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 		$VBoxContainer/TextSuggestions.remove_child(i)
 		
 	for i in json.result['wordList']:
-		var TextButton = Button.new()
-		var TrimmedText = i['sequence'].replace(".", "")
-		TextButton.text = TrimmedText
-		TextButton.connect("pressed", self, "_predict_next_character", [i['token_str']])
-		$VBoxContainer/TextSuggestions.add_child(TextButton)
+		var button = CharacterButton.instance()
+		var TrimmedText = i['sequence'].replace(".", "").split(' ')[-1]
+		button.text = TrimmedText
+		button.get_node("TextureButton").connect("pressed", self, "_predict_next_character", [i['token_str']])
+		
+		$VBoxContainer/TextSuggestions.add_child(button)
 		
 func _on_Button_pressed():
 	_predict_next_character()
+
+
+func _on_Buttontest_pressed():
+	$VBoxContainer/GridContainer.get_child(1).state = 'pressed'
