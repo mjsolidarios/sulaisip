@@ -31,6 +31,7 @@ def recommend():
     _text = request.json['text']
   else:
     _text = request.args.get('text')
+    print(_text)
 
   html = ""
   if str(_text) == "None":

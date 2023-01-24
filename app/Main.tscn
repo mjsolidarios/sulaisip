@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://fonts/Roboto-Regular.ttf" type="DynamicFontData" id=2]
 [ext_resource path="res://components/CharacterButton.tscn" type="PackedScene" id=3]
+[ext_resource path="res://NavContainer.gd" type="Script" id=4]
 
 [sub_resource type="DynamicFont" id=1]
 size = 37
@@ -36,8 +37,9 @@ margin_bottom = 64.0
 margin_top = 68.0
 margin_right = 1024.0
 margin_bottom = 148.0
+script = ExtResource( 4 )
 
-[node name="CharacterButton" parent="VBoxContainer/HBoxContainer" instance=ExtResource( 3 )]
+[node name="PreviousButton" parent="VBoxContainer/HBoxContainer" instance=ExtResource( 3 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 508.0
@@ -50,7 +52,7 @@ margin_right = 512.0
 margin_bottom = 80.0
 columns = 6
 
-[node name="CharacterButton2" parent="VBoxContainer/HBoxContainer" instance=ExtResource( 3 )]
+[node name="NextButton" parent="VBoxContainer/HBoxContainer" instance=ExtResource( 3 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 516.0
@@ -76,11 +78,13 @@ margin_top = 171.0
 margin_right = 1024.0
 margin_bottom = 198.0
 custom_fonts/font = SubResource( 2 )
-text = "Sulaisip: Thought-to-text Tagalog BCI"
+text = "Tip: Pumili ng letra  o salita para mahulaan ang susunod na salita."
 align = 1
 valign = 1
 
 [node name="HTTPRequest" type="HTTPRequest" parent="."]
+
+[node name="Timer" type="Timer" parent="."]
 
 [connection signal="pressed" from="VBoxContainer/Buttontest" to="." method="_on_Buttontest_pressed"]
 [connection signal="request_completed" from="HTTPRequest" to="." method="_on_HTTPRequest_request_completed"]
