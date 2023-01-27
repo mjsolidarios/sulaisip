@@ -11,6 +11,9 @@ var query := {}
 var current_page = 0
 var next_characters:String = ""
 
+export var websocket_url = "ws://127.0.0.1:1880"
+var _wsclient = WebSocketClient.new()
+
 func _array_to_string(arr: Array) -> String:
 	var s = ""
 	for i in arr:
@@ -65,15 +68,18 @@ func _populate_character_grid():
 			print("p5:"+character_bucket.substr(24, 5))
 			_create_instanced_button(i)
 	
-
 func _ready():
 	file.open("res://data/character_rankings.json", File.READ)
 	character_frequency_data = parse_json(file.get_as_text())
 	$VBoxContainer/TextEdit.text = " "
 	_predict_next_character()
 	
-	#_predict_initial_characters()
-
+	# websocket
+	_wsclient.connect("connection_closed", self, "_wsclosed")
+	_wsclient.connect("connection_error", self, "_wserror")
+	_wsclient.connect("connection_established", self, "_wsconnected")
+	_wsclient.connect("data_received", self, "_wson_data")
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -86,6 +92,25 @@ func _process(delta):
 		$VBoxContainer/HBoxContainer/NextButton.state = "disabled"
 	else:
 		$VBoxContainer/HBoxContainer/NextButton.state = "normal"
+	
+	_wsclient.poll()
+
+func _wsconnected(proto = ""):
+	print("Connected with protocol: ", proto)
+
+func _wsclosed(was_clean = false):
+	print("Closed, clean: ", was_clean)
+	set_process(false)
+func _wserror(was_clean = false):
+	print("Closed, clean: ", was_clean)
+	set_process(false)
+
+func _wsondata():
+	# Print the received packet, you MUST always use get_peer(1).get_packet
+	# to receive data from server, and not get_packet directly when not
+	# using the MultiplayerAPI.
+	print("Got data from server: ", _wsclient.get_peer(1).get_packet().get_string_from_utf8())
+
 	
 func _add_text_to_input(var character):
 	$VBoxContainer/TextEdit.text += character
@@ -128,7 +153,7 @@ func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 		$VBoxContainer/TextSuggestions.add_child(button)
 	
 	_populate_character_grid()
-		
+
 func _on_Button_pressed():
 	_predict_next_character()
 
