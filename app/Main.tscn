@@ -26,9 +26,8 @@ icon_del = ExtResource( 8 )
 icon_prev = ExtResource( 10 )
 icon_next = ExtResource( 9 )
 active_group = "top"
-active_button_top_index = 0
-active_button_bottom_index = 0
-active_button_bottom_grid_index = 0
+active_button_top_index = 4
+active_button_bottom_grid_index = 7
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchor_right = 1.0

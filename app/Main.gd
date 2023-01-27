@@ -17,7 +17,6 @@ export var icon_next: Texture
 
 export(String, "top", "bottom") var active_group
 export var active_button_top_index = -1
-export var active_button_bottom_index = -1
 export var active_button_bottom_grid_index = -1
 
 onready var char_grid = $VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/GridContainer
@@ -46,7 +45,10 @@ func _goto_prev_page():
 	_populate_character_grid()
 
 func _del_char():
-	pass
+	var text = $VBoxContainer/TextEdit.text
+	if text.length() > 0:
+		$VBoxContainer/TextEdit.text = text.substr(0, text.length() - 1)
+	_predict_next_character()
 
 func _create_control_button(_type):
 	var button = CharacterButton.instance()
@@ -160,37 +162,6 @@ func _process(delta):
 				i.state="hover"
 			else:
 				i.state="normal"
-
-#	if current_page == 0:
-#		$VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/PreviousButton.state = "disabled"
-#	else:
-#		$VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/PreviousButton.state = "normal"
-	
-#	if current_page == 4:
-#		$VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/NextButton.state = "disabled"
-#	else:
-#		$VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/NextButton.state = "normal"
-#
-#	if active_button_bottom_index == -1:
-#		button_keys_node.get_child(0).state = "disabled"
-#	if active_button_bottom_index == 0:
-#		if current_page == 0:
-#			button_keys_node.get_child(0).state = "disabled"
-#		else:
-#			button_keys_node.get_child(0).state = "normal"
-#
-#		button_keys_node.get_child(2).state = "normal"
-#		button_keys_node.get_child(3).state = "normal"
-#	if active_button_bottom_index == 2:
-#		button_keys_node.get_child(0).state = "normal"
-#		button_keys_node.get_child(2).state = "hover"
-#		button_keys_node.get_child(3).state = "normal"
-#	if active_button_bottom_index == 2:
-#		button_keys_node.get_child(0).state = "normal"
-#		button_keys_node.get_child(2).state = "hover"
-#		button_keys_node.get_child(3).state = "normal"
-	
-	
 	
 func _add_text_to_input(var character):
 	$VBoxContainer/TextEdit.text += character
