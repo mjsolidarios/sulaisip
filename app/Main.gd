@@ -22,14 +22,14 @@ func _create_instanced_button(text:String):
 	button.text = text
 	button.rect_size = Vector2(90,80)
 	button.get_node("TextureButton").connect("pressed", self, "_add_text_to_input", [text])
-	$VBoxContainer/HBoxContainer/GridContainer.add_child(button)
+	$VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/GridContainer.add_child(button)
 
 func _populate_character_grid():
 	
 	# clear node
-	var children = $VBoxContainer/HBoxContainer/GridContainer.get_children()
+	var children = $VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/GridContainer.get_children()
 	for i in children:
-		$VBoxContainer/HBoxContainer/GridContainer.remove_child(i)
+		$VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/GridContainer.remove_child(i)
 	
 	var character_bucket = ""
 	var all_characters_string = _array_to_string(character_frequency_data.keys())
@@ -78,14 +78,14 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if current_page == 0:
-		$VBoxContainer/HBoxContainer/PreviousButton.state = "disabled"
+		$VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/PreviousButton.state = "disabled"
 	else:
-		$VBoxContainer/HBoxContainer/PreviousButton.state = "normal"
+		$VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/PreviousButton.state = "normal"
 	
 	if current_page == 4:
-		$VBoxContainer/HBoxContainer/NextButton.state = "disabled"
+		$VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/NextButton.state = "disabled"
 	else:
-		$VBoxContainer/HBoxContainer/NextButton.state = "normal"
+		$VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/NextButton.state = "normal"
 	
 func _add_text_to_input(var character):
 	$VBoxContainer/TextEdit.text += character
@@ -113,9 +113,9 @@ func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 #	print(json.result['wordList'])
 	
 	# clear node
-	var children = $VBoxContainer/TextSuggestions.get_children()
+	var children = $VBoxContainer/NinePatchRect/MarginContainer/TextSuggestions.get_children()
 	for i in children:
-		$VBoxContainer/TextSuggestions.remove_child(i)
+		$VBoxContainer/NinePatchRect/MarginContainer/TextSuggestions.remove_child(i)
 	
 	next_characters = json.result['nextCharacters']
 
@@ -125,7 +125,7 @@ func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 		button.text = TrimmedText.to_lower()
 		button.get_node("TextureButton").connect("pressed", self, "_predict_next_character", [i['token_str']])
 		
-		$VBoxContainer/TextSuggestions.add_child(button)
+		$VBoxContainer/NinePatchRect/MarginContainer/TextSuggestions.add_child(button)
 	
 	_populate_character_grid()
 		
