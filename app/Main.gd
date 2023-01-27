@@ -11,6 +11,17 @@ var query := {}
 var current_page = 0
 var next_characters:String = ""
 
+export var icon_del: Texture
+export var icon_prev: Texture
+export var icon_next: Texture
+
+export(String, "top", "bottom") var active_group
+export var active_button_top_index = -1
+export var active_button_bottom_index = -1
+export var active_button_bottom_grid_index = -1
+
+onready var char_grid = $VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/GridContainer
+
 func _array_to_string(arr: Array) -> String:
 	var s = ""
 	for i in arr:
@@ -22,14 +33,42 @@ func _create_instanced_button(text:String):
 	button.text = text
 	button.rect_size = Vector2(90,80)
 	button.get_node("TextureButton").connect("pressed", self, "_add_text_to_input", [text])
-	$VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/GridContainer.add_child(button)
+	char_grid.add_child(button)
+
+func _goto_next_page():
+	if current_page < 5:
+		current_page+=1
+	_populate_character_grid()
+
+func _goto_prev_page():
+	if current_page >= 0:
+		current_page-=1
+	_populate_character_grid()
+
+func _del_char():
+	pass
+
+func _create_control_button(_type):
+	var button = CharacterButton.instance()
+	button.text = ""
+	button.rect_size = Vector2(90,80)
+	if _type == "next":
+		button.texture_icon = icon_next
+		button.get_node("TextureButton").connect("pressed", self, "_goto_next_page")
+	if _type == "prev":
+		button.texture_icon = icon_prev
+		button.get_node("TextureButton").connect("pressed", self, "_goto_prev_page")
+	if _type == "del":
+		button.texture_icon = icon_del
+		button.get_node("TextureButton").connect("pressed", self, "_del_char")
+	char_grid.add_child(button)
 
 func _populate_character_grid():
 	
 	# clear node
-	var children = $VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/GridContainer.get_children()
+	var children = char_grid.get_children()
 	for i in children:
-		$VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/GridContainer.remove_child(i)
+		char_grid.remove_child(i)
 	
 	var character_bucket = ""
 	var all_characters_string = _array_to_string(character_frequency_data.keys())
@@ -44,26 +83,41 @@ func _populate_character_grid():
 	print(character_bucket)
 	print(next_characters)
 	
-	if current_page == 0:
+	if current_page <= 0:
+		_create_control_button("prev")
 		for i in character_bucket.substr(0, 5):
 			print("p1:"+character_bucket.substr(0, 5))
 			_create_instanced_button(i)
+		_create_control_button("next")
+		_create_control_button("del")
 	if current_page == 1:
-		for i in character_bucket.substr(6, 5):
-			print("p2:"+character_bucket.substr(6, 5))
+		_create_control_button("prev")
+		for i in character_bucket.substr(5, 5):
+			print("p2:"+character_bucket.substr(5, 5))
 			_create_instanced_button(i)
+		_create_control_button("next")
+		_create_control_button("del")
 	if current_page == 2:
-		for i in character_bucket.substr(12, 5):
-			print("p3:"+character_bucket.substr(12, 5))
+		_create_control_button("prev")
+		for i in character_bucket.substr(10, 5):
+			print("p3:"+character_bucket.substr(10, 5))
 			_create_instanced_button(i)
+		_create_control_button("next")
+		_create_control_button("del")
 	if current_page == 3:
-		for i in character_bucket.substr(18, 5):
-			print("p4:"+character_bucket.substr(18, 5))
+		_create_control_button("prev")
+		for i in character_bucket.substr(15, 5):
+			print("p4:"+character_bucket.substr(15, 5))
 			_create_instanced_button(i)
-	if current_page == 4:
-		for i in character_bucket.substr(24, 5):
-			print("p5:"+character_bucket.substr(24, 5))
+		_create_control_button("next")
+		_create_control_button("del")
+	if current_page >= 4:
+		_create_control_button("prev")
+		for i in character_bucket.substr(20, 5):
+			print("p5:"+character_bucket.substr(20, 5))
 			_create_instanced_button(i)
+		_create_control_button("next")
+		_create_control_button("del")
 	
 
 func _ready():
@@ -71,21 +125,72 @@ func _ready():
 	character_frequency_data = parse_json(file.get_as_text())
 	$VBoxContainer/TextEdit.text = " "
 	_predict_next_character()
-	
-	#_predict_initial_characters()
 
+func _input(event):
+	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if current_page == 0:
-		$VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/PreviousButton.state = "disabled"
+	if active_group == "top":
+		$VBoxContainer/NinePatchRect.is_active = true
+		$VBoxContainer/NinePatchRect2.is_active = false
 	else:
-		$VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/PreviousButton.state = "normal"
+		$VBoxContainer/NinePatchRect.is_active = false
+		$VBoxContainer/NinePatchRect2.is_active = true
+		
 	
-	if current_page == 4:
-		$VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/NextButton.state = "disabled"
-	else:
-		$VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/NextButton.state = "normal"
+	var text_suggestions_node = get_node("VBoxContainer/NinePatchRect/MarginContainer/TextSuggestions")
+	var button_keys_node = get_node("VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer")
+	var button_char_keys_node = get_node("VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/GridContainer")
+	
+	var children_top_count = text_suggestions_node.get_child_count()
+	var children_bottom_count = button_keys_node.get_child_count()
+	var children_bottom_grid_count = button_char_keys_node.get_child_count()
+	
+	if children_top_count > 0:
+		for i in text_suggestions_node.get_children():
+			if  i.get_index() == active_button_top_index:
+				i.state="hover"
+			else:
+				i.state="normal"
+	
+	if children_bottom_grid_count > 0:
+		for i in button_char_keys_node.get_children():
+			if  i.get_index() == active_button_bottom_grid_index:
+				i.state="hover"
+			else:
+				i.state="normal"
+
+#	if current_page == 0:
+#		$VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/PreviousButton.state = "disabled"
+#	else:
+#		$VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/PreviousButton.state = "normal"
+	
+#	if current_page == 4:
+#		$VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/NextButton.state = "disabled"
+#	else:
+#		$VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/NextButton.state = "normal"
+#
+#	if active_button_bottom_index == -1:
+#		button_keys_node.get_child(0).state = "disabled"
+#	if active_button_bottom_index == 0:
+#		if current_page == 0:
+#			button_keys_node.get_child(0).state = "disabled"
+#		else:
+#			button_keys_node.get_child(0).state = "normal"
+#
+#		button_keys_node.get_child(2).state = "normal"
+#		button_keys_node.get_child(3).state = "normal"
+#	if active_button_bottom_index == 2:
+#		button_keys_node.get_child(0).state = "normal"
+#		button_keys_node.get_child(2).state = "hover"
+#		button_keys_node.get_child(3).state = "normal"
+#	if active_button_bottom_index == 2:
+#		button_keys_node.get_child(0).state = "normal"
+#		button_keys_node.get_child(2).state = "hover"
+#		button_keys_node.get_child(3).state = "normal"
+	
+	
 	
 func _add_text_to_input(var character):
 	$VBoxContainer/TextEdit.text += character
@@ -105,6 +210,7 @@ func _predict_next_character(text_fill:=""):
 		$HTTPRequest.request(url, headers, use_ssl, HTTPClient.METHOD_POST, to_json(query))
 	else:
 		$HTTPRequest.request(url)
+	current_page = 0
 
 func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 	var json = JSON.parse(body.get_string_from_utf8())	

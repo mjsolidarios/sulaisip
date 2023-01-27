@@ -1,12 +1,14 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://fonts/Roboto-Regular.ttf" type="DynamicFontData" id=2]
-[ext_resource path="res://components/CharacterButton.tscn" type="PackedScene" id=3]
 [ext_resource path="res://NavContainer.gd" type="Script" id=4]
 [ext_resource path="res://images/rect.png" type="Texture" id=5]
 [ext_resource path="res://NinePatchRectPanel.gd" type="Script" id=6]
 [ext_resource path="res://images/rect_inactive.png" type="Texture" id=7]
+[ext_resource path="res://images/backspace-icon.png" type="Texture" id=8]
+[ext_resource path="res://images/arrow-right.png" type="Texture" id=9]
+[ext_resource path="res://images/arrow-left.png" type="Texture" id=10]
 
 [sub_resource type="DynamicFont" id=1]
 size = 37
@@ -20,6 +22,13 @@ font_data = ExtResource( 2 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 1 )
+icon_del = ExtResource( 8 )
+icon_prev = ExtResource( 10 )
+icon_next = ExtResource( 9 )
+active_group = "top"
+active_button_top_index = 0
+active_button_bottom_index = 0
+active_button_bottom_grid_index = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchor_right = 1.0
@@ -63,7 +72,7 @@ margin_bottom = 96.0
 [node name="NinePatchRect2" type="NinePatchRect" parent="VBoxContainer"]
 margin_top = 168.0
 margin_right = 1024.0
-margin_bottom = 256.0
+margin_bottom = 254.0
 rect_min_size = Vector2( 0, 86 )
 texture = ExtResource( 5 )
 patch_margin_left = 2
@@ -86,29 +95,14 @@ margin_bottom = -13.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/NinePatchRect2/MarginContainer"]
 margin_right = 1020.0
-margin_bottom = 80.0
+margin_bottom = 70.0
 script = ExtResource( 4 )
 
-[node name="PreviousButton" parent="VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer" instance=ExtResource( 3 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 506.0
-margin_bottom = 80.0
-text = "<"
-
 [node name="GridContainer" type="GridContainer" parent="VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer"]
-margin_left = 510.0
-margin_right = 510.0
-margin_bottom = 80.0
-columns = 6
-
-[node name="NextButton" parent="VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer" instance=ExtResource( 3 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 514.0
 margin_right = 1020.0
-margin_bottom = 80.0
-text = ">"
+margin_bottom = 70.0
+size_flags_horizontal = 3
+columns = 8
 
 [node name="Buttontest" type="Button" parent="VBoxContainer"]
 visible = false
