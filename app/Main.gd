@@ -16,10 +16,14 @@ export var icon_prev: Texture
 export var icon_next: Texture
 
 export(String, "top", "bottom") var active_group
-export var active_button_top_index = -1
-export var active_button_bottom_grid_index = -1
+export var active_button_top_index = 0
+export var active_button_bottom_grid_index = 0
 
-onready var char_grid = $VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/GridContainer
+
+onready var text_suggestions_node = get_node("VBoxContainer/NinePatchRect/MarginContainer/TextSuggestions")
+onready var button_keys_node = get_node("VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer")
+onready var button_char_keys_node = get_node("VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/GridContainer")
+onready var char_grid = button_char_keys_node
 
 func _array_to_string(arr: Array) -> String:
 	var s = ""
@@ -139,11 +143,6 @@ func _process(delta):
 	else:
 		$VBoxContainer/NinePatchRect.is_active = false
 		$VBoxContainer/NinePatchRect2.is_active = true
-		
-	
-	var text_suggestions_node = get_node("VBoxContainer/NinePatchRect/MarginContainer/TextSuggestions")
-	var button_keys_node = get_node("VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer")
-	var button_char_keys_node = get_node("VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/GridContainer")
 	
 	var children_top_count = text_suggestions_node.get_child_count()
 	var children_bottom_count = button_keys_node.get_child_count()
@@ -190,9 +189,9 @@ func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 #	print(json.result['wordList'])
 	
 	# clear node
-	var children = $VBoxContainer/NinePatchRect/MarginContainer/TextSuggestions.get_children()
+	var children = text_suggestions_node.get_children()
 	for i in children:
-		$VBoxContainer/NinePatchRect/MarginContainer/TextSuggestions.remove_child(i)
+		text_suggestions_node.remove_child(i)
 	
 	next_characters = json.result['nextCharacters']
 
@@ -202,13 +201,28 @@ func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 		button.text = TrimmedText.to_lower()
 		button.get_node("TextureButton").connect("pressed", self, "_predict_next_character", [i['token_str']])
 		
-		$VBoxContainer/NinePatchRect/MarginContainer/TextSuggestions.add_child(button)
+		text_suggestions_node.add_child(button)
 	
 	_populate_character_grid()
 		
 func _on_Button_pressed():
 	_predict_next_character()
 
+func _press_active_button():
+	if active_group == "top":
+		for i in text_suggestions_node.get_children():
+			if i.state == "hover":
+				print(i.get_node("TextureButton/Label").text)
+				i.state = "pressed"
+				i.get_node("TextureButton").emit_signal("pressed")
+	else:
+		for i in button_char_keys_node.get_children():
+			if i.state == "hover":
+				i.state = "pressed"
+				print(i.get_node("TextureButton/Label").text)
+				i.get_node("TextureButton").emit_signal("pressed")
+	active_button_top_index = 0
+	active_button_bottom_grid_index = 0
 
 func _on_Buttontest_pressed():
-	$VBoxContainer/GridContainer.get_child(1).state = 'pressed'
+	_press_active_button()
