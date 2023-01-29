@@ -4,14 +4,14 @@ var file = File.new()
 var data
 var character_frequency_data:Dictionary
 var CharacterButton = preload("res://components/CharacterButton.tscn")
-var url = "http://127.0.0.1:5000"
+export var nlp_server_url = ""
 var headers = ["Content-Type: application/json"]
 var use_ssl=true
 var query := {}
 var current_page = 0
 var next_characters:String = ""
 
-export var websocket_url = "ws://127.0.0.1:1880"
+export var websocket_url = "ws://127.0.0.1:1880/data"
 var _wsclient = WebSocketClient.new()
 export var icon_del: Texture
 export var icon_prev: Texture
@@ -26,6 +26,8 @@ onready var text_suggestions_node = get_node("VBoxContainer/NinePatchRect/Margin
 onready var button_keys_node = get_node("VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer")
 onready var button_char_keys_node = get_node("VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/GridContainer")
 onready var char_grid = button_char_keys_node
+
+var timer_started = false
 
 func _array_to_string(arr: Array) -> String:
 	var s = ""
@@ -88,56 +90,65 @@ func _populate_character_grid():
 	character_bucket = (next_characters+all_characters_string).replace(" ", "").to_lower()
 	
 	# pagination
-	print(character_bucket)
-	print(next_characters)
+	# print(character_bucket)
+	# print(next_characters)
 	
 	if current_page <= 0:
 		_create_control_button("prev")
 		for i in character_bucket.substr(0, 5):
-			print("p1:"+character_bucket.substr(0, 5))
+#			print("p1:"+character_bucket.substr(0, 5))
 			_create_instanced_button(i)
 		_create_control_button("next")
 		_create_control_button("del")
 	if current_page == 1:
 		_create_control_button("prev")
 		for i in character_bucket.substr(5, 5):
-			print("p2:"+character_bucket.substr(5, 5))
+#			print("p2:"+character_bucket.substr(5, 5))
 			_create_instanced_button(i)
 		_create_control_button("next")
 		_create_control_button("del")
 	if current_page == 2:
 		_create_control_button("prev")
 		for i in character_bucket.substr(10, 5):
-			print("p3:"+character_bucket.substr(10, 5))
+#			print("p3:"+character_bucket.substr(10, 5))
 			_create_instanced_button(i)
 		_create_control_button("next")
 		_create_control_button("del")
 	if current_page == 3:
 		_create_control_button("prev")
 		for i in character_bucket.substr(15, 5):
-			print("p4:"+character_bucket.substr(15, 5))
+#			print("p4:"+character_bucket.substr(15, 5))
 			_create_instanced_button(i)
 		_create_control_button("next")
 		_create_control_button("del")
 	if current_page >= 4:
 		_create_control_button("prev")
 		for i in character_bucket.substr(20, 5):
-			print("p5:"+character_bucket.substr(20, 5))
+#			print("p5:"+character_bucket.substr(20, 5))
 			_create_instanced_button(i)
 		_create_control_button("next")
 		_create_control_button("del")
 	
 func _ready():
+	
+	_wsclient.connect("connection_closed", self, "_wsclosed")
+	_wsclient.connect("connection_error", self, "_wserror")
+	_wsclient.connect("connection_established", self, "_wsconnected")
+	_wsclient.connect("data_received", self, "_wsondata")
+	
+	var err = _wsclient.connect_to_url(websocket_url)
+	
+	if err != OK:
+		print("Unable to connect.")
+		set_process(false)
+		
+	
 	file.open("res://data/character_rankings.json", File.READ)
 	character_frequency_data = parse_json(file.get_as_text())
 	$VBoxContainer/TextEdit.text = " "
 	_predict_next_character()
-	
+	print(_wsclient)
 	# websocket
-	_wsclient.connect("connection_closed", self, "_wsclosed")
-	_wsclient.connect("connection_error", self, "_wserror")
-	_wsclient.connect("connection_established", self, "_wsconnected")
-	_wsclient.connect("data_received", self, "_wson_data")
 	
 
 func _input(event):
@@ -178,6 +189,7 @@ func _wsconnected(proto = ""):
 func _wsclosed(was_clean = false):
 	print("Closed, clean: ", was_clean)
 	set_process(false)
+	
 func _wserror(was_clean = false):
 	print("Closed, clean: ", was_clean)
 	set_process(false)
@@ -186,7 +198,24 @@ func _wsondata():
 	# Print the received packet, you MUST always use get_peer(1).get_packet
 	# to receive data from server, and not get_packet directly when not
 	# using the MultiplayerAPI.
-	print("Got data from server: ", _wsclient.get_peer(1).get_packet().get_string_from_utf8())
+	
+	var data = _wsclient.get_peer(1).get_packet().get_string_from_utf8()
+	var parsed_data = data.replace("[", "").replace("]", "").split(",")
+	var neutral = parsed_data[1]
+	var smile = 51
+	var left = parsed_data[2].to_int()
+	var right = parsed_data[3]
+	var push = parsed_data[4]
+	var pull = parsed_data[5]
+	
+	if !timer_started:
+		$Timer.start()
+		timer_started = true
+#	if smile > 50:
+#		$Timer.start()
+	
+	
+	# print(smile,",", left,",", right,",", push,",", pull)
 
 	
 func _add_text_to_input(var character):
@@ -204,9 +233,9 @@ func _predict_next_character(text_fill:=""):
 		query = { "text": "" }
 	
 	if current_text.length()>0:
-		$HTTPRequest.request(url, headers, use_ssl, HTTPClient.METHOD_POST, to_json(query))
+		$HTTPRequest.request(nlp_server_url, headers, use_ssl, HTTPClient.METHOD_POST, to_json(query))
 	else:
-		$HTTPRequest.request(url)
+		$HTTPRequest.request(nlp_server_url)
 	current_page = 0
 
 func _on_HTTPRequest_request_completed(result, response_code, headers, body):
@@ -253,3 +282,8 @@ func _press_active_button():
 
 func _on_Buttontest_pressed():
 	_press_active_button()
+
+
+func _on_Timer_timeout():
+	timer_started = false
+	print("Cycle complete")

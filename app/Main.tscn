@@ -22,6 +22,7 @@ font_data = ExtResource( 2 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 1 )
+nlp_server_url = "http://127.0.0.1:5000"
 icon_del = ExtResource( 8 )
 icon_prev = ExtResource( 10 )
 icon_next = ExtResource( 9 )
@@ -127,6 +128,8 @@ text = "Test"
 [node name="HTTPRequest" type="HTTPRequest" parent="."]
 
 [node name="Timer" type="Timer" parent="."]
+wait_time = 4.0
 
 [connection signal="pressed" from="VBoxContainer/Buttontest" to="." method="_on_Buttontest_pressed"]
 [connection signal="request_completed" from="HTTPRequest" to="." method="_on_HTTPRequest_request_completed"]
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
