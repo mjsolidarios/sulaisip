@@ -28,7 +28,7 @@ npm-debug.log.*
 *.sass.d.ts
 *.scss.d.ts
 
-server/venv
-server/__pycache__
+app/server/venv
+app/server/__pycache__
 
 app/.import

@@ -52,6 +52,19 @@ func _goto_prev_page():
 		current_page-=1
 	_populate_character_grid()
 
+func _moveto_next_button(direction="left"):
+	if direction=="left":
+		if active_group == "top":
+			active_button_top_index -= 1
+		else:
+			active_button_bottom_grid_index -= 1
+	else:
+		if active_group == "top":
+			active_button_top_index += 1
+		else:
+			active_button_bottom_grid_index += 1
+	
+
 func _del_char():
 	var text = $VBoxContainer/TextEdit.text
 	if text.length() > 0:
@@ -201,18 +214,18 @@ func _wsondata():
 	
 	var data = _wsclient.get_peer(1).get_packet().get_string_from_utf8()
 	var parsed_data = data.replace("[", "").replace("]", "").split(",")
-	var neutral = parsed_data[1]
-	var smile = 51
+	var neutral = parsed_data[0].to_int()
+	var smile = parsed_data[1].to_int()
 	var left = parsed_data[2].to_int()
-	var right = parsed_data[3]
-	var push = parsed_data[4]
-	var pull = parsed_data[5]
+	var right = parsed_data[3].to_int()
+	var push = parsed_data[4].to_int()
+	var pull = parsed_data[5].to_int()
 	
 	if !timer_started:
 		$Timer.start()
 		timer_started = true
-#	if smile > 50:
-#		$Timer.start()
+	if smile > 50:
+		$Timer.start()
 	
 	
 	# print(smile,",", left,",", right,",", push,",", pull)
@@ -282,7 +295,6 @@ func _press_active_button():
 
 func _on_Buttontest_pressed():
 	_press_active_button()
-
 
 func _on_Timer_timeout():
 	timer_started = false
