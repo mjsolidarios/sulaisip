@@ -10,6 +10,7 @@ var use_ssl=true
 var query := {}
 var current_page = 0
 var next_characters:String = ""
+var thread
 
 export var websocket_url = "ws://127.0.0.1:1880/data"
 var _wsclient = WebSocketClient.new()
@@ -28,6 +29,8 @@ onready var button_char_keys_node = get_node("VBoxContainer/NinePatchRect2/Margi
 onready var char_grid = button_char_keys_node
 
 var timer_started = false
+var timer_pressed_started = false
+var active_direction = "right"
 
 func _array_to_string(arr: Array) -> String:
 	var s = ""
@@ -52,8 +55,8 @@ func _goto_prev_page():
 		current_page-=1
 	_populate_character_grid()
 
-func _moveto_next_button(direction="left"):
-	if direction=="left":
+func _moveto_next_button():	
+	if active_direction=="left":
 		if active_group == "top":
 			active_button_top_index -= 1
 		else:
@@ -63,6 +66,13 @@ func _moveto_next_button(direction="left"):
 			active_button_top_index += 1
 		else:
 			active_button_bottom_grid_index += 1
+			
+	if active_button_top_index > 4:
+		active_button_top_index = 0
+	if active_button_bottom_grid_index > 7:
+		active_button_bottom_grid_index = 0
+		
+	# print(active_button_top_index, ",", active_button_bottom_grid_index)
 	
 
 func _del_char():
@@ -141,8 +151,14 @@ func _populate_character_grid():
 			_create_instanced_button(i)
 		_create_control_button("next")
 		_create_control_button("del")
-	
+
+func _python_server():
+	OS.execute("run_server.bat", [], false)
+
 func _ready():
+	
+	thread = Thread.new()
+	thread.start(self, "_python_server")
 	
 	_wsclient.connect("connection_closed", self, "_wsclosed")
 	_wsclient.connect("connection_error", self, "_wserror")
@@ -163,7 +179,9 @@ func _ready():
 	print(_wsclient)
 	# websocket
 	
-
+func _exit_tree():
+	thread.wait_to_finish()
+	
 func _input(event):
 	pass
 
@@ -214,22 +232,72 @@ func _wsondata():
 	
 	var data = _wsclient.get_peer(1).get_packet().get_string_from_utf8()
 	var parsed_data = data.replace("[", "").replace("]", "").split(",")
-	var neutral = parsed_data[0].to_int()
-	var smile = parsed_data[1].to_int()
-	var left = parsed_data[2].to_int()
-	var right = parsed_data[3].to_int()
-	var push = parsed_data[4].to_int()
-	var pull = parsed_data[5].to_int()
+#	var neutral = parsed_data[0].to_int()
+#	var smile = parsed_data[1].to_int()
+#	var left = parsed_data[2].to_int()
+#	var right = parsed_data[3].to_int()
+#	var push = parsed_data[4].to_int()
+#	var pull = parsed_data[5].to_int()
+
+	var blink = parsed_data[0].to_float()
+	var left = parsed_data[1].to_float()
+	var right = parsed_data[2].to_float()
+	var aX = abs(parsed_data[3].to_float())
+	var aY = abs(parsed_data[4].to_float())
+	var aZ = abs(parsed_data[5].to_float())
 	
-	if !timer_started:
-		$Timer.start()
-		timer_started = true
-	if smile > 50:
-		$Timer.start()
+	print("left: "+str(left),"|","right: "+str(right)) 
+
+#	if !timer_started:
+#		$Timer.start()
+#		timer_started = true
+	
+#	if (left != 0 and !(left > 100)):
+#		print("left: "+str(left)) # move_right
+#		active_direction = "right"
+#		if !timer_started:
+#			$Timer.start()
+#	if (right != 0 and !(right > 100)):
+#		#print("right: "+str(right)) # move_left
+#		active_direction = "left"
+#		if !timer_started:
+#			$Timer.start()
+	if left > 0:
+		active_direction = "left"
+		if !timer_started:
+			$Timer.start()
+			timer_started = true
+	if right > 0:
+		active_direction = "right"
+		if !timer_started:
+			$Timer.start()
+			timer_started = true
+		
+	if blink != 0 and blink == 100:
+		if !timer_pressed_started:
+			$TimerPressButton.start()
+			timer_pressed_started = true
+		blink = 0
+	
+	var pitch = abs(atan2(-aX, aZ) * 180 / PI )
+	var roll = abs(atan2(-aY, aZ) * 180 / PI)
+	var pitch_to_rad = deg2rad(pitch)
+	var roll_to_rad = deg2rad(roll)
+	# print("pitch:"+str(pitch), " | roll:"+str(roll))
+	
+#	if pitch < 50 and pitch > 30:
+#		active_group = "top"
+#	if pitch > 70:
+#		active_group = "bottom"
+	if roll > 20 and roll != 90:
+		#print(roll_to_rad)
+		if roll_to_rad > 1:
+			active_group = "top"
+		else:
+			active_group = "bottom"
 	
 	
 	# print(smile,",", left,",", right,",", push,",", pull)
-
 	
 func _add_text_to_input(var character):
 	$VBoxContainer/TextEdit.text += character
@@ -281,21 +349,31 @@ func _press_active_button():
 	if active_group == "top":
 		for i in text_suggestions_node.get_children():
 			if i.state == "hover":
-				print(i.get_node("TextureButton/Label").text)
+				# print(i.get_node("TextureButton/Label").text)
 				i.state = "pressed"
 				i.get_node("TextureButton").emit_signal("pressed")
 	else:
 		for i in button_char_keys_node.get_children():
 			if i.state == "hover":
 				i.state = "pressed"
-				print(i.get_node("TextureButton/Label").text)
+				# print(i.get_node("TextureButton/Label").text)
 				i.get_node("TextureButton").emit_signal("pressed")
-	active_button_top_index = 0
-	active_button_bottom_grid_index = 0
+	if active_button_top_index > 4:
+		active_button_top_index = 0
+	if active_button_bottom_grid_index > 7:
+		active_button_bottom_grid_index = 0
+	# print(active_button_top_index, ",", active_button_bottom_grid_index)
 
 func _on_Buttontest_pressed():
 	_press_active_button()
 
 func _on_Timer_timeout():
 	timer_started = false
-	print("Cycle complete")
+	print("Move started"+active_direction)
+	_moveto_next_button()
+	# print("Cycle complete")
+
+
+func _on_TimerPressButton_timeout():
+	timer_pressed_started = false
+	_press_active_button()

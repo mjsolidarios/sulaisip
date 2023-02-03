@@ -19,7 +19,7 @@ generator = pipeline('fill-mask', model=model, tokenizer=tokenizer)
 
 character_rankings = {}
 
-f = open('character_rankings.json')
+f = open('server/character_rankings.json')
 character_rankings = json.load(f)
 f.close()
 

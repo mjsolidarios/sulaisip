@@ -27,8 +27,7 @@ icon_del = ExtResource( 8 )
 icon_prev = ExtResource( 10 )
 icon_next = ExtResource( 9 )
 active_group = "bottom"
-active_button_top_index = 3
-active_button_bottom_grid_index = 4
+active_button_bottom_grid_index = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchor_right = 1.0
@@ -120,6 +119,7 @@ align = 1
 valign = 1
 
 [node name="Buttontest" type="Button" parent="VBoxContainer"]
+visible = false
 margin_top = 308.0
 margin_right = 1024.0
 margin_bottom = 328.0
@@ -130,6 +130,10 @@ text = "Test"
 [node name="Timer" type="Timer" parent="."]
 wait_time = 4.0
 
+[node name="TimerPressButton" type="Timer" parent="."]
+one_shot = true
+
 [connection signal="pressed" from="VBoxContainer/Buttontest" to="." method="_on_Buttontest_pressed"]
 [connection signal="request_completed" from="HTTPRequest" to="." method="_on_HTTPRequest_request_completed"]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
+[connection signal="timeout" from="TimerPressButton" to="." method="_on_TimerPressButton_timeout"]
