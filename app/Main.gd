@@ -112,10 +112,6 @@ func _populate_character_grid():
 	
 	character_bucket = (next_characters+all_characters_string).replace(" ", "").to_lower()
 	
-	# pagination
-	# print(character_bucket)
-	# print(next_characters)
-	
 	if current_page <= 0:
 		_create_control_button("prev")
 		for i in character_bucket.substr(0, 5):
@@ -226,18 +222,9 @@ func _wserror(was_clean = false):
 	set_process(false)
 
 func _wsondata():
-	# Print the received packet, you MUST always use get_peer(1).get_packet
-	# to receive data from server, and not get_packet directly when not
-	# using the MultiplayerAPI.
 	
 	var data = _wsclient.get_peer(1).get_packet().get_string_from_utf8()
 	var parsed_data = data.replace("[", "").replace("]", "").split(",")
-#	var neutral = parsed_data[0].to_int()
-#	var smile = parsed_data[1].to_int()
-#	var left = parsed_data[2].to_int()
-#	var right = parsed_data[3].to_int()
-#	var push = parsed_data[4].to_int()
-#	var pull = parsed_data[5].to_int()
 
 	var blink = parsed_data[0].to_float()
 	var left = parsed_data[1].to_float()
@@ -248,20 +235,6 @@ func _wsondata():
 	
 	print("left: "+str(left),"|","right: "+str(right)) 
 
-#	if !timer_started:
-#		$Timer.start()
-#		timer_started = true
-	
-#	if (left != 0 and !(left > 100)):
-#		print("left: "+str(left)) # move_right
-#		active_direction = "right"
-#		if !timer_started:
-#			$Timer.start()
-#	if (right != 0 and !(right > 100)):
-#		#print("right: "+str(right)) # move_left
-#		active_direction = "left"
-#		if !timer_started:
-#			$Timer.start()
 	if left > 0:
 		active_direction = "left"
 		if !timer_started:
@@ -283,21 +256,13 @@ func _wsondata():
 	var roll = abs(atan2(-aY, aZ) * 180 / PI)
 	var pitch_to_rad = deg2rad(pitch)
 	var roll_to_rad = deg2rad(roll)
-	# print("pitch:"+str(pitch), " | roll:"+str(roll))
-	
-#	if pitch < 50 and pitch > 30:
-#		active_group = "top"
-#	if pitch > 70:
-#		active_group = "bottom"
+
 	if roll > 20 and roll != 90:
 		#print(roll_to_rad)
 		if roll_to_rad > 1:
 			active_group = "top"
 		else:
 			active_group = "bottom"
-	
-	
-	# print(smile,",", left,",", right,",", push,",", pull)
 	
 func _add_text_to_input(var character):
 	$VBoxContainer/TextEdit.text += character
@@ -321,9 +286,6 @@ func _predict_next_character(text_fill:=""):
 
 func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 	var json = JSON.parse(body.get_string_from_utf8())	
-#	print(json.result['nextCharacters'])
-#	print(json.result['stringGroup'])
-#	print(json.result['wordList'])
 	
 	# clear node
 	var children = text_suggestions_node.get_children()
