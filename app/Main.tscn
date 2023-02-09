@@ -1,7 +1,8 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://fonts/Roboto-Regular.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://fonts/label_font.tres" type="DynamicFont" id=3]
 [ext_resource path="res://NavContainer.gd" type="Script" id=4]
 [ext_resource path="res://images/rect.png" type="Texture" id=5]
 [ext_resource path="res://NinePatchRectPanel.gd" type="Script" id=6]
@@ -9,18 +10,51 @@
 [ext_resource path="res://images/backspace-icon.png" type="Texture" id=8]
 [ext_resource path="res://images/arrow-right.png" type="Texture" id=9]
 [ext_resource path="res://images/arrow-left.png" type="Texture" id=10]
+[ext_resource path="res://addons/3D Outline/Outline.material" type="Material" id=11]
 
 [sub_resource type="DynamicFont" id=1]
-size = 37
+size = 40
+extra_spacing_top = 5
 font_data = ExtResource( 2 )
 
-[sub_resource type="DynamicFont" id=2]
-size = 22
-font_data = ExtResource( 2 )
+[sub_resource type="CubeMesh" id=2]
+
+[sub_resource type="Shader" id=3]
+
+[sub_resource type="ShaderMaterial" id=4]
+next_pass = ExtResource( 11 )
+shader = SubResource( 3 )
+
+[sub_resource type="CylinderMesh" id=7]
+top_radius = 0.2
+bottom_radius = 0.1
+height = 4.0
+radial_segments = 16
+
+[sub_resource type="SpatialMaterial" id=8]
+params_diffuse_mode = 1
+albedo_color = Color( 0.356557, 1, 0.366611, 1 )
+roughness = 0.0
+
+[sub_resource type="CylinderMesh" id=9]
+top_radius = 0.1
+radial_segments = 16
+
+[sub_resource type="SpatialMaterial" id=5]
+params_diffuse_mode = 1
+albedo_color = Color( 0.0266393, 0.292793, 1, 1 )
+roughness = 0.0
+
+[sub_resource type="SpatialMaterial" id=6]
+params_diffuse_mode = 1
+albedo_color = Color( 0.957031, 0.801627, 0.0921731, 1 )
+roughness = 0.0
 
 [node name="Control" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_left = -1.0
+margin_right = -1.0
 script = ExtResource( 1 )
 nlp_server_url = "http://127.0.0.1:5000"
 icon_del = ExtResource( 8 )
@@ -29,20 +63,27 @@ icon_next = ExtResource( 9 )
 active_group = "bottom"
 active_button_bottom_grid_index = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="HBoxContainer" type="GridContainer" parent="."]
 anchor_right = 1.0
+anchor_bottom = 1.0
+columns = 2
 
-[node name="TextEdit" type="TextEdit" parent="VBoxContainer"]
-margin_right = 1024.0
-margin_bottom = 60.0
-rect_min_size = Vector2( 0, 60 )
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+margin_right = 800.0
+margin_bottom = 278.0
+rect_min_size = Vector2( 800, 0 )
+
+[node name="TextEdit" type="TextEdit" parent="HBoxContainer/VBoxContainer"]
+margin_right = 800.0
+margin_bottom = 65.0
+rect_min_size = Vector2( 0, 65 )
 custom_fonts/font = SubResource( 1 )
 caret_blink = true
 
-[node name="NinePatchRect" type="NinePatchRect" parent="VBoxContainer"]
-margin_top = 64.0
-margin_right = 1024.0
-margin_bottom = 164.0
+[node name="NinePatchRect" type="NinePatchRect" parent="HBoxContainer/VBoxContainer"]
+margin_top = 69.0
+margin_right = 800.0
+margin_bottom = 169.0
 rect_min_size = Vector2( 0, 100 )
 texture = ExtResource( 5 )
 patch_margin_left = 2
@@ -56,7 +97,7 @@ active_texture = ExtResource( 5 )
 inactive_texture = ExtResource( 7 )
 is_active = true
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/NinePatchRect"]
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/VBoxContainer/NinePatchRect"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 2.0
@@ -64,14 +105,14 @@ margin_top = 2.0
 margin_right = -2.0
 margin_bottom = -2.0
 
-[node name="TextSuggestions" type="HBoxContainer" parent="VBoxContainer/NinePatchRect/MarginContainer"]
-margin_right = 1020.0
+[node name="TextSuggestions" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/NinePatchRect/MarginContainer"]
+margin_right = 796.0
 margin_bottom = 96.0
 
-[node name="NinePatchRect2" type="NinePatchRect" parent="VBoxContainer"]
-margin_top = 168.0
-margin_right = 1024.0
-margin_bottom = 254.0
+[node name="NinePatchRect2" type="NinePatchRect" parent="HBoxContainer/VBoxContainer"]
+margin_top = 173.0
+margin_right = 800.0
+margin_bottom = 259.0
 rect_min_size = Vector2( 0, 86 )
 texture = ExtResource( 5 )
 patch_margin_left = 2
@@ -84,7 +125,7 @@ script = ExtResource( 6 )
 active_texture = ExtResource( 5 )
 inactive_texture = ExtResource( 7 )
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/NinePatchRect2"]
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/VBoxContainer/NinePatchRect2"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 2.0
@@ -92,48 +133,124 @@ margin_top = 3.0
 margin_right = -2.0
 margin_bottom = -13.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/NinePatchRect2/MarginContainer"]
-margin_right = 1020.0
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/NinePatchRect2/MarginContainer"]
+margin_right = 796.0
 margin_bottom = 70.0
 script = ExtResource( 4 )
 
-[node name="GridContainer" type="GridContainer" parent="VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer"]
-margin_right = 1020.0
+[node name="GridContainer" type="GridContainer" parent="HBoxContainer/VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer"]
+margin_right = 796.0
 margin_bottom = 70.0
 size_flags_horizontal = 3
 columns = 8
 
-[node name="Control" type="Control" parent="VBoxContainer"]
-margin_top = 258.0
-margin_right = 1024.0
-margin_bottom = 273.0
+[node name="Control" type="Control" parent="HBoxContainer/VBoxContainer"]
+margin_top = 263.0
+margin_right = 800.0
+margin_bottom = 278.0
 rect_min_size = Vector2( 0, 15 )
 
-[node name="Label" type="Label" parent="VBoxContainer"]
-margin_top = 277.0
-margin_right = 1024.0
-margin_bottom = 304.0
-custom_fonts/font = SubResource( 2 )
-text = "Tip: Pumili ng letra  o salita para mahulaan ang susunod na salita."
-align = 1
-valign = 1
-
-[node name="Buttontest" type="Button" parent="VBoxContainer"]
+[node name="Buttontest" type="Button" parent="HBoxContainer/VBoxContainer"]
 visible = false
 margin_top = 308.0
 margin_right = 1024.0
 margin_bottom = 328.0
 text = "Test"
 
+[node name="Panel" type="Panel" parent="HBoxContainer"]
+margin_left = 804.0
+margin_right = 1034.0
+margin_bottom = 278.0
+rect_min_size = Vector2( 230, 0 )
+
+[node name="ViewportContainer" type="ViewportContainer" parent="HBoxContainer/Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -10.0
+
+[node name="Viewport" type="Viewport" parent="HBoxContainer/Panel/ViewportContainer"]
+size = Vector2( 220, 230 )
+size_override_stretch = true
+transparent_bg = true
+handle_input_locally = false
+render_target_update_mode = 3
+gui_disable_input = true
+
+[node name="Spatial" type="Spatial" parent="HBoxContainer/Panel/ViewportContainer/Viewport"]
+
+[node name="Camera" type="Camera" parent="HBoxContainer/Panel/ViewportContainer/Viewport/Spatial"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.11381 )
+
+[node name="MeshInstance" type="MeshInstance" parent="HBoxContainer/Panel/ViewportContainer/Viewport/Spatial"]
+visible = false
+mesh = SubResource( 2 )
+
+[node name="MeshInstance2" type="MeshInstance" parent="HBoxContainer/Panel/ViewportContainer/Viewport/Spatial"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.27582 )
+mesh = SubResource( 2 )
+material/0 = SubResource( 4 )
+
+[node name="Arrows" type="Spatial" parent="HBoxContainer/Panel/ViewportContainer/Viewport/Spatial"]
+transform = Transform( 0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0.863242 )
+
+[node name="AccelerometerArrow" type="Spatial" parent="HBoxContainer/Panel/ViewportContainer/Viewport/Spatial/Arrows"]
+transform = Transform( 1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0 )
+
+[node name="Bottom" type="MeshInstance" parent="HBoxContainer/Panel/ViewportContainer/Viewport/Spatial/Arrows/AccelerometerArrow"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
+mesh = SubResource( 7 )
+material/0 = SubResource( 8 )
+
+[node name="Top" type="MeshInstance" parent="HBoxContainer/Panel/ViewportContainer/Viewport/Spatial/Arrows/AccelerometerArrow"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0 )
+mesh = SubResource( 9 )
+material/0 = SubResource( 8 )
+
+[node name="MagnetoArrow" type="Spatial" parent="HBoxContainer/Panel/ViewportContainer/Viewport/Spatial/Arrows"]
+transform = Transform( -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0 )
+
+[node name="Bottom" type="MeshInstance" parent="HBoxContainer/Panel/ViewportContainer/Viewport/Spatial/Arrows/MagnetoArrow"]
+transform = Transform( 1, 3.55271e-15, -1.77636e-15, 0, 1, -2.98023e-08, 0, 2.98023e-08, 1, 0, 2, 4.76837e-07 )
+mesh = SubResource( 7 )
+material/0 = SubResource( 5 )
+
+[node name="Top" type="MeshInstance" parent="HBoxContainer/Panel/ViewportContainer/Viewport/Spatial/Arrows/MagnetoArrow"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0 )
+mesh = SubResource( 9 )
+material/0 = SubResource( 5 )
+
+[node name="NorthArrow" type="Spatial" parent="HBoxContainer/Panel/ViewportContainer/Viewport/Spatial/Arrows"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+
+[node name="Bottom" type="MeshInstance" parent="HBoxContainer/Panel/ViewportContainer/Viewport/Spatial/Arrows/NorthArrow"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
+mesh = SubResource( 7 )
+material/0 = SubResource( 6 )
+
+[node name="Top" type="MeshInstance" parent="HBoxContainer/Panel/ViewportContainer/Viewport/Spatial/Arrows/NorthArrow"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0 )
+mesh = SubResource( 9 )
+material/0 = SubResource( 6 )
+
 [node name="HTTPRequest" type="HTTPRequest" parent="."]
 
 [node name="Timer" type="Timer" parent="."]
-wait_time = 4.0
+wait_time = 3.0
 
 [node name="TimerPressButton" type="Timer" parent="."]
 one_shot = true
 
-[connection signal="pressed" from="VBoxContainer/Buttontest" to="." method="_on_Buttontest_pressed"]
+[node name="Label" type="Label" parent="."]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -27.0
+custom_fonts/font = ExtResource( 3 )
+text = "Tip: Pumili ng letra  o salita para mahulaan ang susunod na salita."
+align = 1
+valign = 1
+
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/Buttontest" to="." method="_on_Buttontest_pressed"]
 [connection signal="request_completed" from="HTTPRequest" to="." method="_on_HTTPRequest_request_completed"]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
 [connection signal="timeout" from="TimerPressButton" to="." method="_on_TimerPressButton_timeout"]

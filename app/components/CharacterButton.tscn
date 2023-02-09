@@ -1,16 +1,12 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://fonts/Roboto-Regular.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://fonts/button_font.tres" type="DynamicFont" id=1]
 [ext_resource path="res://images/button-default.png" type="Texture" id=2]
 [ext_resource path="res://images/button-default-pressed.png" type="Texture" id=3]
 [ext_resource path="res://images/button-default-selected.png" type="Texture" id=4]
 [ext_resource path="res://components/CharacterButton.gd" type="Script" id=5]
 
 [sub_resource type="Theme" id=1]
-
-[sub_resource type="DynamicFont" id=2]
-size = 32
-font_data = ExtResource( 1 )
 
 [node name="CharacterButton" type="Control"]
 anchor_right = 1.0
@@ -37,7 +33,7 @@ expand = true
 [node name="Label" type="Label" parent="TextureButton"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = ExtResource( 1 )
 text = "a"
 align = 1
 valign = 1
