@@ -235,7 +235,6 @@ material/0 = SubResource( 6 )
 [node name="HTTPRequest" type="HTTPRequest" parent="."]
 
 [node name="Timer" type="Timer" parent="."]
-wait_time = 3.0
 
 [node name="TimerPressButton" type="Timer" parent="."]
 one_shot = true

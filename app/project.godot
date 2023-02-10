@@ -21,6 +21,7 @@ window/size/height=300
 [global]
 
 window=false
+LOAD=false
 
 [gui]
 

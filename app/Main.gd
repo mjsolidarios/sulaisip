@@ -355,6 +355,9 @@ func _wsondata():
 	var mX = parsed_data.mX
 	var mY = parsed_data.mY
 	var mZ = parsed_data.mZ
+	
+	var yaw = 0.0
+	
 	gyro = Vector3(gX, gY, gZ)
 	acce = Vector3(aX, aY, aZ)
 	mag = Vector3(mX, mY, mZ)
@@ -374,37 +377,67 @@ func _wsondata():
 	
 	# print("left: "+str(left)+"|"+"right: "+str(right))
 		
-#	if blink > 0:
-#		if !timer_pressed_started:
-#			$TimerPressButton.start()
-#			timer_pressed_started = true
-#		blink = 0
+	if push > 0:
+		if !timer_pressed_started:
+			$TimerPressButton.start()
+			timer_pressed_started = true
+		# blink = 0
 	
-	var pitch = (atan2(-gX, gZ) * 180 / PI )
-	var roll = abs(atan2(-aY, aZ) * 180 / PI)
+	# var pitch = abs(atan2(-aY, aZ) * 180 / PI )
+	var rollupdown = abs(atan2(-aY, aZ) * 180 / PI)
+#	var rotation = stepify(abs(gZ), 0.01)
 	
-	if roll > 100:
+	var roll = atan2(-gY, -gZ)
+	var pitch = atan2(gX, -gZ)
+	yaw = yaw * 0.98 + roll * 0.02
+	
+	if yaw > 180:
+		yaw -= 360
+	elif yaw < -180:
+		yaw += 360
+	
+	print(yaw)
+	# print(mZ, aZ, gZ)
+	
+	if rollupdown > 100:
 		active_group = "bottom"
 	else:
 		active_group = "top"
 	
-	var current_rotation = $HBoxContainer/Panel/ViewportContainer/Viewport/Spatial/MeshInstance.get_rotation_degrees().x
+	#var current_rotation = $HBoxContainer/Panel/ViewportContainer/Viewport/Spatial/MeshInstance.get_rotation_degrees().x
 	
-	var threshhold = 10 
+	var threshhold = 0.002
+	var base_rot = 0.005
 	
-	print(left)
-	 
-	if current_rotation > last_rotation + threshhold:
-		active_direction = "right"
+	if yaw > base_rot and yaw < base_rot + threshhold:
+		active_direction = "neutral"
 		if !timer_started:
 			$Timer.start()
 			timer_started = true
-	elif current_rotation < last_rotation + threshhold:
+	if yaw < base_rot:
 		active_direction = "left"
 		if !timer_started:
 			$Timer.start()
 			timer_started = true
-	last_rotation = current_rotation
+	if yaw > base_rot + threshhold:
+		active_direction = "right"
+		if !timer_started:
+			$Timer.start()
+			timer_started = true
+
+
+	# print(rotation)
+#	if current_rotation > last_rotation + threshhold:
+#		active_direction = "right"
+#		if !timer_started:
+#			$Timer.start()
+#			timer_started = true
+#	elif current_rotation < last_rotation + threshhold:
+#		active_direction = "left"
+#		if !timer_started:
+#			$Timer.start()
+#			timer_started = true
+#	last_rotation = current_rotation
 	
 func _add_text_to_input(var character):
 	$HBoxContainer/VBoxContainer/TextEdit.text += character
