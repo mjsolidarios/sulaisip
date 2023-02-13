@@ -395,8 +395,10 @@ func _wsondata():
 		yaw -= 360
 	elif yaw < -180:
 		yaw += 360
+	
+	yaw = round(yaw*1000)
 
-	print(yaw)
+	#print(yaw)
 	# print(mZ, aZ, gZ)
 
 	if rollupdown > 100:
@@ -406,19 +408,45 @@ func _wsondata():
 
 	#var current_rotation = $HBoxContainer/Panel/ViewportContainer/Viewport/Spatial/MeshInstance.get_rotation_degrees().x
 
-	var threshhold = 0.002
-	var base_rot = 0.005
-
-	if yaw <= base_rot + threshhold:
-		active_direction = "left"
-	elif yaw >= base_rot + threshhold:
+	var threshhold = 1
+	var base_rot = 5
+	var last_rotation = 0
+	
+	var current_rotation = yaw
+	
+	if current_rotation > last_rotation + threshhold:
 		active_direction = "right"
+	elif current_rotation < last_rotation - threshhold:
+		active_direction = "left"
 	else:
 		active_direction = "neutral"
+	last_rotation = current_rotation + threshhold
+	
+	if !(current_rotation + threshhold == last_rotation + threshhold):
+		if !timer_started:
+			$Timer.start()
+			timer_started = true	
+#	if yaw <= base_rot - threshhold:
+#		active_direction = "left"
+#	elif yaw >= base_rot + threshhold:
+#		active_direction = "right"
+#	else:
+#		active_direction = "neutral"
 		
-	if !timer_started:
-		$Timer.start()
-		timer_started = true
+	print(active_direction, yaw)
+	
+
+	
+	if active_button_top_index >= 4:
+		active_button_top_index = 0
+	if active_button_top_index < 0:
+		active_button_top_index = 0
+	if active_button_bottom_grid_index >= 7:
+		active_button_bottom_grid_index = 0
+	if active_button_bottom_grid_index < 0:
+		active_button_bottom_grid_index = 0
+		
+	# print(active_button_top_index, ",", active_button_bottom_grid_index)
 
 
 #	if yaw > base_rot and yaw < base_rot + threshhold:
@@ -507,11 +535,6 @@ func _press_active_button():
 				i.state = "pressed"
 				# print(i.get_node("TextureButton/Label").text)
 				i.get_node("TextureButton").emit_signal("pressed")
-	if active_button_top_index > 4:
-		active_button_top_index = 0
-	if active_button_bottom_grid_index > 7:
-		active_button_bottom_grid_index = 0
-	# print(active_button_top_index, ",", active_button_bottom_grid_index)
 
 func _on_Buttontest_pressed():
 	_press_active_button()
