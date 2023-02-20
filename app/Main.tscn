@@ -235,6 +235,7 @@ material/0 = SubResource( 6 )
 [node name="HTTPRequest" type="HTTPRequest" parent="."]
 
 [node name="Timer" type="Timer" parent="."]
+wait_time = 1.5
 
 [node name="TimerPressButton" type="Timer" parent="."]
 one_shot = true
@@ -249,6 +250,7 @@ text = "Tip: Pumili ng letra  o salita para mahulaan ang susunod na salita."
 align = 1
 valign = 1
 
+[connection signal="text_changed" from="HBoxContainer/VBoxContainer/TextEdit" to="." method="_on_TextEdit_text_changed"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/Buttontest" to="." method="_on_Buttontest_pressed"]
 [connection signal="request_completed" from="HTTPRequest" to="." method="_on_HTTPRequest_request_completed"]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

@@ -1,5 +1,7 @@
 extends Control
 
+# Tagalog to type: Ang bawat rumehistrong kalahok sa patimpalak ay nagantimpalaan
+
 var file = File.new()
 var data
 var character_frequency_data:Dictionary
@@ -506,16 +508,18 @@ func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 	var children = text_suggestions_node.get_children()
 	for i in children:
 		text_suggestions_node.remove_child(i)
+	
+	if $HBoxContainer/VBoxContainer/TextEdit.text.length() != 0:
+		next_characters = json.result['nextCharacters']
 
-	next_characters = json.result['nextCharacters']
+	if $HBoxContainer/VBoxContainer/TextEdit.text.length() != 0:
+		for i in json.result['wordList']:
+			var button = CharacterButton.instance()
+			var TrimmedText = i['sequence'].replace(".", "").split(' ')[-1]
+			button.text = TrimmedText.to_lower()
+			button.get_node("TextureButton").connect("pressed", self, "_predict_next_character", [i['token_str']])
 
-	for i in json.result['wordList']:
-		var button = CharacterButton.instance()
-		var TrimmedText = i['sequence'].replace(".", "").split(' ')[-1]
-		button.text = TrimmedText.to_lower()
-		button.get_node("TextureButton").connect("pressed", self, "_predict_next_character", [i['token_str']])
-
-		text_suggestions_node.add_child(button)
+			text_suggestions_node.add_child(button)
 
 	_populate_character_grid()
 
@@ -549,3 +553,7 @@ func _on_Timer_timeout():
 func _on_TimerPressButton_timeout():
 	timer_pressed_started = false
 	_press_active_button()
+
+
+func _on_TextEdit_text_changed():
+	_predict_next_character()
