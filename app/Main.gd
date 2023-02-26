@@ -1,6 +1,7 @@
 extends Control
 
 # Tagalog to type: Ang bawat rumehistrong kalahok sa patimpalak ay nagantimpalaan
+# Conversational: Oo, Hindi, Kamusta, Ayos, Paumanhin, Salamat, Sige, Meron, Wala, Pakiusap
 
 var file = File.new()
 var data
