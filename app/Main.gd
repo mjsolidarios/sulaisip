@@ -163,8 +163,10 @@ func _populate_character_grid():
 		_create_control_button("del")
 
 func _python_server():
-	OS.execute("run_server.bat", [], false)
-
+	var output = []
+	OS.execute("run_server.bat", [], false, output)
+	print(output)
+	
 func _ready():
 
 	thread = Thread.new()
@@ -436,7 +438,7 @@ func _wsondata():
 #	else:
 #		active_direction = "neutral"
 		
-	print(active_direction, yaw)
+	# print(active_direction, yaw)
 	
 
 	
@@ -503,6 +505,7 @@ func _predict_next_character(text_fill:=""):
 	current_page = 0
 
 func _on_HTTPRequest_request_completed(result, response_code, headers, body):
+	print(body)
 	var json = JSON.parse(body.get_string_from_utf8())
 
 	# clear node
