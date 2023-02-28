@@ -62,6 +62,9 @@ def recommend():
 
     string_group = ""
 
+    if len(fuzzyword) > 0:
+        string_group + fuzzyword[0].replace(' ','')
+
     for i in res:
         string_group += i['token_str']
 
@@ -83,14 +86,14 @@ def recommend():
     word_list = []
 
     if len(fuzzyword) > 0:
-        word_list = [{"sequence": fuzzyword[0], "score": fuzzyword[1]}] + res
+        word_list = [{"sequence": fuzzyword[0], "score": fuzzyword[1], "token_str": fuzzyword[0].replace('', '')}] + res
     else:
         word_list = res
 
     jsondump = {
         "wordList": word_list,
-        "stringGroup": string_group,
-        "nextCharacters": next_characters,
+        "stringGroup": string_group.replace(' ',''),
+        "nextCharacters": next_characters.replace(' ',''),
         "nextCharactersRanked": next_character_rankings_sorted
     }
 

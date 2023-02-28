@@ -517,6 +517,7 @@ func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 		next_characters = json.result['nextCharacters']
 
 	if $HBoxContainer/VBoxContainer/TextEdit.text.length() != 0:
+		print(json.result['wordList'])
 		for i in json.result['wordList']:
 			var button = CharacterButton.instance()
 			var TrimmedText = i['sequence'].replace(".", "").split(' ')[-1]
