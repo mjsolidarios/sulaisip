@@ -23,7 +23,6 @@ var _wsclient = WebSocketPeer.new()
 @export var active_button_top_index = 0
 @export var active_button_bottom_grid_index = 0
 
-
 @onready var text_suggestions_node = get_node("HBoxContainer/VBoxContainer/NinePatchRect/MarginContainer/TextSuggestions")
 @onready var button_keys_node = get_node("HBoxContainer/VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer")
 @onready var button_char_keys_node = get_node("HBoxContainer/VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/GridContainer")
