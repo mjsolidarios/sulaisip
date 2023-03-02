@@ -488,6 +488,7 @@ func _add_text_to_input(character):
 	_predict_next_character()
 
 func _predict_next_character(text_fill:=""):
+	print("text fill = ")
 	var current_text = $HBoxContainer/VBoxContainer/TextEdit.text
 	if text_fill.length() > 0:
 		$HBoxContainer/VBoxContainer/TextEdit.text = current_text+text_fill+" "
