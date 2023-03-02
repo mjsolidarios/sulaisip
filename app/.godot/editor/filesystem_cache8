@@ -1,0 +1,51 @@
+2a60927148abd1d33b818b535e306557
+::res://::1677737367
+Arrows.tscn::PackedScene::-1::1677737292::0::1::::<><>::
+default_env.tres::Environment::-1::1677737292::0::1::::<><>::
+flag.png::CompressedTexture2D::8389715840544531196::1674861242::1677737368::1::::<><>::
+icon.png::CompressedTexture2D::5429287762772771781::1674448193::1677737368::1::::<><>::
+LICENSE.txt::TextFile::-1::1674861242::0::1::::<><>::
+Main.gd::GDScript::-1::1677737292::0::1::::<>Control<>::
+Main.tscn::PackedScene::-1::1677737292::0::1::::<><>::res://Main.gd<>res://fonts/Roboto-Regular.ttf<>res://fonts/label_font.tres<>res://NavContainer.gd<>res://images/rect.png<>res://NinePatchRectPanel.gd<>res://images/rect_inactive.png<>res://images/backspace-icon.png<>res://images/arrow-right.png<>res://images/arrow-left.png<>res://addons/3D Outline/Outline.material
+NavContainer.gd::GDScript::-1::1677737292::0::1::::<>HBoxContainer<>::
+NinePatchRectPanel.gd::GDScript::-1::1677737292::0::1::::<>NinePatchRect<>::
+README.md::TextFile::-1::1674861242::0::1::::<><>::
+TagDoc93.ttf::FontFile::1121825500403878888::1675518086::1677737368::1::::<><>::
+::res://addons/::1675607231
+::res://addons/3D Outline/::1677737292
+Outline.gdshader::Shader::-1::1677737292::0::1::::<><>::
+Outline.material::ShaderMaterial::-1::1677636039::0::1::::<><>::res://addons/3D Outline/Outline.shader
+Toggle Outline.gd::GDScript::-1::1677737292::0::1::::<>Node3D<>::
+::res://addons/3D Outline/Test/::1675607231
+Outlined Mesh.tscn::PackedScene::-1::1677737292::0::1::::<><>::res://addons/3D Outline/Outline.material
+Test View.tscn::PackedScene::-1::1677737292::0::1::::<><>::res://addons/3D Outline/Toggle Outline.gd<>res://addons/3D Outline/Test/Outlined Mesh.tscn
+::res://components/::1675579403
+CharacterButton.gd::GDScript::-1::1677737292::0::1::::<>Control<>::
+CharacterButton.tscn::PackedScene::-1::1677737292::0::1::::<><>::res://fonts/button_font.tres<>res://images/button-default.png<>res://images/button-default-pressed.png<>res://images/button-default-selected.png<>res://components/CharacterButton.gd
+::res://data/::1674448193
+character_rankings.json::JSON::-1::1674448193::0::1::::<><>::
+::res://fonts/::1677636039
+button_font.tres::FontFile::-1::1677737292::0::1::::<><>::res://fonts/Roboto-Bold.ttf
+label_font.tres::FontFile::-1::1677737292::0::1::::<><>::res://fonts/Roboto-Regular.ttf
+Roboto-Black.ttf::FontFile::2684783487646378764::1674528236::1677737368::1::::<><>::
+Roboto-BlackItalic.ttf::FontFile::2526660081053584813::1674528236::1677737368::1::::<><>::
+Roboto-Bold.ttf::FontFile::391393159511573281::1674528236::1677737368::1::::<><>::
+Roboto-BoldItalic.ttf::FontFile::2377439577290730315::1674528236::1677737368::1::::<><>::
+Roboto-Italic.ttf::FontFile::4574794113564569995::1674528236::1677737368::1::::<><>::
+Roboto-Light.ttf::FontFile::2541747996978240740::1674528236::1677737368::1::::<><>::
+Roboto-LightItalic.ttf::FontFile::7914142383802515675::1674528236::1677737368::1::::<><>::
+Roboto-Medium.ttf::FontFile::9062455319671165754::1674528236::1677737368::1::::<><>::
+Roboto-MediumItalic.ttf::FontFile::8100028358744489452::1674528236::1677737368::1::::<><>::
+Roboto-Regular.ttf::FontFile::5214408547448911952::1674528236::1677737368::1::::<><>::
+Roboto-Thin.ttf::FontFile::7051766798646039914::1674528236::1677737368::1::::<><>::
+Roboto-ThinItalic.ttf::FontFile::1723259526598255117::1674528236::1677737368::1::::<><>::
+::res://images/::1675067952
+arrow-left.png::CompressedTexture2D::4038805939477289151::1674861242::1677737368::1::::<><>::
+arrow-right.png::CompressedTexture2D::4509501915238279825::1674861242::1677737368::1::::<><>::
+backspace-icon.png::CompressedTexture2D::4438555983824104066::1674861242::1677737368::1::::<><>::
+button-default-pressed.png::CompressedTexture2D::5140910071219050648::1674529580::1677737368::1::::<><>::
+button-default-selected.png::CompressedTexture2D::5773914991898141210::1674529293::1677737368::1::::<><>::
+button-default.png::CompressedTexture2D::8016077627728313768::1674529216::1677737368::1::::<><>::
+rect.png::CompressedTexture2D::5929776772634123651::1675067948::1677737368::1::::<><>::
+rect_inactive.png::CompressedTexture2D::8254983733631069602::1674861242::1677737368::1::::<><>::
+::res://utils/::1674861242

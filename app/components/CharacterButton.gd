@@ -1,12 +1,12 @@
 extends Control
 
 
-export(String, "normal", "hover", "pressed", "disabled") var state
-export var texture_normal: Texture
-export var texture_hover: Texture
-export var texture_pressed: Texture
-export var text:String
-export var texture_icon: Texture
+@export var state: String # (String, "normal", "hover", "pressed", "disabled")
+@export var texture_normal: Texture2D
+@export var texture_hover: Texture2D
+@export var texture_pressed: Texture2D
+@export var text:String
+@export var texture_icon: Texture2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

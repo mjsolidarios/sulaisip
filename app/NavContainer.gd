@@ -3,9 +3,9 @@ extends HBoxContainer
 
 ## Called when the node enters the scene tree for the first time.
 #func _ready():
-#	$GridContainer/PreviousButton/TextureButton.connect("pressed", self, "_goto_next_page")
-#	$GridContainer/NextButton/TextureButton.connect("pressed", self, "_goto_prev_page")
-#	$GridContainer/DeleteButton/TextureButton.connect("pressed", self, "_delete_char")
+#	$GridContainer/PreviousButton/TextureButton.connect("pressed",Callable(self,"_goto_next_page"))
+#	$GridContainer/NextButton/TextureButton.connect("pressed",Callable(self,"_goto_prev_page"))
+#	$GridContainer/DeleteButton/TextureButton.connect("pressed",Callable(self,"_delete_char"))
 #
 #
 ## Called every frame. 'delta' is the elapsed time since the previous frame.

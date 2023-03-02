@@ -1,9 +1,9 @@
 extends NinePatchRect
 
 
-export var active_texture: Texture
-export var inactive_texture: Texture
-export var is_active: bool
+@export var active_texture: Texture2D
+@export var inactive_texture: Texture2D
+@export var is_active: bool
 
 
 # Called when the node enters the scene tree for the first time.

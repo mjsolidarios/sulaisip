@@ -6,7 +6,7 @@ bottom_radius = 0.1
 height = 4.0
 radial_segments = 16
 
-[sub_resource type="SpatialMaterial" id=3]
+[sub_resource type="StandardMaterial3D" id=3]
 params_diffuse_mode = 1
 albedo_color = Color( 0.356557, 1, 0.366611, 1 )
 roughness = 0.0
@@ -15,53 +15,53 @@ roughness = 0.0
 top_radius = 0.1
 radial_segments = 16
 
-[sub_resource type="SpatialMaterial" id=5]
+[sub_resource type="StandardMaterial3D" id=5]
 params_diffuse_mode = 1
 albedo_color = Color( 0.0266393, 0.292793, 1, 1 )
 roughness = 0.0
 
-[sub_resource type="SpatialMaterial" id=6]
+[sub_resource type="StandardMaterial3D" id=6]
 params_diffuse_mode = 1
 albedo_color = Color( 0.957031, 0.801627, 0.0921731, 1 )
 roughness = 0.0
 
-[node name="Arrows" type="Spatial"]
+[node name="Arrows" type="Node3D"]
 
-[node name="AccelerometerArrow" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0 )
+[node name="AccelerometerArrow" type="Node3D" parent="."]
+transform = Transform3D( 1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0 )
 
-[node name="Bottom" type="MeshInstance" parent="AccelerometerArrow"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
+[node name="Bottom" type="MeshInstance3D" parent="AccelerometerArrow"]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
 mesh = SubResource( 2 )
 material/0 = SubResource( 3 )
 
-[node name="Top" type="MeshInstance" parent="AccelerometerArrow"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0 )
+[node name="Top" type="MeshInstance3D" parent="AccelerometerArrow"]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0 )
 mesh = SubResource( 4 )
 material/0 = SubResource( 3 )
 
-[node name="MagnetoArrow" type="Spatial" parent="."]
-transform = Transform( -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0 )
+[node name="MagnetoArrow" type="Node3D" parent="."]
+transform = Transform3D( -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0 )
 
-[node name="Bottom" type="MeshInstance" parent="MagnetoArrow"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
+[node name="Bottom" type="MeshInstance3D" parent="MagnetoArrow"]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
 mesh = SubResource( 2 )
 material/0 = SubResource( 5 )
 
-[node name="Top" type="MeshInstance" parent="MagnetoArrow"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0 )
+[node name="Top" type="MeshInstance3D" parent="MagnetoArrow"]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0 )
 mesh = SubResource( 4 )
 material/0 = SubResource( 5 )
 
-[node name="NorthArrow" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+[node name="NorthArrow" type="Node3D" parent="."]
+transform = Transform3D( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
 
-[node name="Bottom" type="MeshInstance" parent="NorthArrow"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
+[node name="Bottom" type="MeshInstance3D" parent="NorthArrow"]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
 mesh = SubResource( 2 )
 material/0 = SubResource( 6 )
 
-[node name="Top" type="MeshInstance" parent="NorthArrow"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0 )
+[node name="Top" type="MeshInstance3D" parent="NorthArrow"]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0 )
 mesh = SubResource( 4 )
 material/0 = SubResource( 6 )

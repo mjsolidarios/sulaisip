@@ -45,7 +45,6 @@ def recommend():
     if request.method == 'POST':
         _text = request.json['text']
     else:
-        print(request.args)
         _text = request.args.get('text')
         print(_text)
 
@@ -56,14 +55,15 @@ def recommend():
         print("request: none")
     else:
         res = generator(_text + ' <mask>.')
+        print(_text.split(" ")[len(_text.split(" "))-1])
         fuzzy_character_matching = process.extract(
-            _text, common_words, scorer=fuzzy_scorer)
+            _text.split(" ")[len(_text.split(" "))-1], common_words, scorer=fuzzy_scorer)
         fuzzyword = fuzzy_character_matching[0]
 
     string_group = ""
 
     if len(fuzzyword) > 0:
-        string_group + fuzzyword[0].replace(' ','')
+        string_group + fuzzyword[0].replace(' ', '')
 
     for i in res:
         string_group += i['token_str']
@@ -86,14 +86,15 @@ def recommend():
     word_list = []
 
     if len(fuzzyword) > 0:
-        word_list = [{"sequence": fuzzyword[0], "score": fuzzyword[1], "token_str": fuzzyword[0].replace('', '')}] + res
+        word_list = [{"sequence": fuzzyword[0], "score": fuzzyword[1],
+                      "token_str": fuzzyword[0].replace('', '')}] + res
     else:
         word_list = res
 
     jsondump = {
         "wordList": word_list,
-        "stringGroup": string_group.replace(' ',''),
-        "nextCharacters": next_characters.replace(' ',''),
+        "stringGroup": string_group.replace(' ', ''),
+        "nextCharacters": next_characters.replace(' ', ''),
         "nextCharactersRanked": next_character_rankings_sorted
     }
 

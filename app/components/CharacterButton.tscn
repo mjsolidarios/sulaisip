@@ -1,46 +1,52 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=7 format=3 uid="uid://bbe8n5l0ijgui"]
 
-[ext_resource path="res://fonts/button_font.tres" type="DynamicFont" id=1]
-[ext_resource path="res://images/button-default.png" type="Texture" id=2]
-[ext_resource path="res://images/button-default-pressed.png" type="Texture" id=3]
-[ext_resource path="res://images/button-default-selected.png" type="Texture" id=4]
-[ext_resource path="res://components/CharacterButton.gd" type="Script" id=5]
+[ext_resource type="Texture2D" uid="uid://dmhbvlh7sysb5" path="res://images/button-default.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://cfikbjw1it2vk" path="res://images/button-default-pressed.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://coi6siagqef2q" path="res://images/button-default-selected.png" id="4"]
+[ext_resource type="Script" path="res://components/CharacterButton.gd" id="5"]
+[ext_resource type="FontFile" uid="uid://d2d6kyhwk1ari" path="res://fonts/Roboto-Medium.ttf" id="5_vjo88"]
 
-[sub_resource type="Theme" id=1]
+[sub_resource type="Theme" id="1"]
 
 [node name="CharacterButton" type="Control"]
+custom_minimum_size = Vector2(90, 80)
+layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_bottom = -520.0
-rect_min_size = Vector2( 90, 80 )
+offset_bottom = -520.0
 size_flags_horizontal = 3
-script = ExtResource( 5 )
+script = ExtResource("5")
 state = "normal"
-texture_normal = ExtResource( 2 )
-texture_hover = ExtResource( 4 )
-texture_pressed = ExtResource( 3 )
+texture_normal = ExtResource("2")
+texture_hover = ExtResource("4")
+texture_pressed = ExtResource("3")
 
 [node name="TextureButton" type="TextureButton" parent="."]
+custom_minimum_size = Vector2(90, 80)
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-rect_min_size = Vector2( 90, 80 )
-theme = SubResource( 1 )
-texture_normal = ExtResource( 2 )
-texture_pressed = ExtResource( 3 )
-texture_hover = ExtResource( 4 )
-expand = true
+theme = SubResource("1")
+texture_normal = ExtResource("2")
+texture_pressed = ExtResource("3")
+texture_hover = ExtResource("4")
+stretch_mode = 0
 
 [node name="Label" type="Label" parent="TextureButton"]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-custom_fonts/font = ExtResource( 1 )
+theme_override_fonts/font = ExtResource("5_vjo88")
+theme_override_font_sizes/font_size = 32
 text = "a"
-align = 1
-valign = 1
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-expand = true
-stretch_mode = 6
+expand_mode = 1
+stretch_mode = 5

@@ -2,12 +2,10 @@ extends Control
 
 # Tagalog to type: Ang bawat rumehistrong kalahok sa patimpalak ay nagantimpalaan
 # Conversational: Oo, Hindi, Kamusta, Ayos, Paumanhin, Salamat, Sige, Meron, Wala, Pakiusap
-
-var file = File.new()
 var data
 var character_frequency_data:Dictionary
 var CharacterButton = preload("res://components/CharacterButton.tscn")
-export var nlp_server_url = ""
+@export var nlp_server_url = ""
 var headers = ["Content-Type: application/json"]
 var use_ssl=true
 var query := {}
@@ -15,21 +13,21 @@ var current_page = 0
 var next_characters:String = ""
 var thread
 
-export var websocket_url = "ws://127.0.0.1:1880/data"
-var _wsclient = WebSocketClient.new()
-export var icon_del: Texture
-export var icon_prev: Texture
-export var icon_next: Texture
+@export var websocket_url = "ws://127.0.0.1:1880/data"
+var _wsclient = WebSocketPeer.new()
+@export var icon_del: Texture2D
+@export var icon_prev: Texture2D
+@export var icon_next: Texture2D
 
-export(String, "top", "bottom") var active_group
-export var active_button_top_index = 0
-export var active_button_bottom_grid_index = 0
+@export var active_group: String # (String, "top", "bottom")
+@export var active_button_top_index = 0
+@export var active_button_bottom_grid_index = 0
 
 
-onready var text_suggestions_node = get_node("HBoxContainer/VBoxContainer/NinePatchRect/MarginContainer/TextSuggestions")
-onready var button_keys_node = get_node("HBoxContainer/VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer")
-onready var button_char_keys_node = get_node("HBoxContainer/VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/GridContainer")
-onready var char_grid = button_char_keys_node
+@onready var text_suggestions_node = get_node("HBoxContainer/VBoxContainer/NinePatchRect/MarginContainer/TextSuggestions")
+@onready var button_keys_node = get_node("HBoxContainer/VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer")
+@onready var button_char_keys_node = get_node("HBoxContainer/VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer/GridContainer")
+@onready var char_grid = button_char_keys_node
 
 var timer_started = false
 var timer_pressed_started = false
@@ -49,10 +47,10 @@ func _array_to_string(arr: Array) -> String:
 	return s
 
 func _create_instanced_button(text:String):
-	var button = CharacterButton.instance()
+	var button = CharacterButton.instantiate()
 	button.text = text
-	button.rect_size = Vector2(90,80)
-	button.get_node("TextureButton").connect("pressed", self, "_add_text_to_input", [text])
+	button.size = Vector2(90,80)
+	button.get_node("TextureButton").connect("pressed",Callable(self,"_add_text_to_input").bind(text))
 	char_grid.add_child(button)
 
 func _goto_next_page():
@@ -96,18 +94,18 @@ func _del_char():
 	_predict_next_character()
 
 func _create_control_button(_type):
-	var button = CharacterButton.instance()
+	var button = CharacterButton.instantiate()
 	button.text = ""
-	button.rect_size = Vector2(90,80)
+	button.size = Vector2(90,80)
 	if _type == "next":
 		button.texture_icon = icon_next
-		button.get_node("TextureButton").connect("pressed", self, "_goto_next_page")
+		button.get_node("TextureButton").connect("pressed",Callable(self,"_goto_next_page"))
 	if _type == "prev":
 		button.texture_icon = icon_prev
-		button.get_node("TextureButton").connect("pressed", self, "_goto_prev_page")
+		button.get_node("TextureButton").connect("pressed",Callable(self,"_goto_prev_page"))
 	if _type == "del":
 		button.texture_icon = icon_del
-		button.get_node("TextureButton").connect("pressed", self, "_del_char")
+		button.get_node("TextureButton").connect("pressed",Callable(self,"_del_char"))
 	char_grid.add_child(button)
 
 func _populate_character_grid():
@@ -163,19 +161,17 @@ func _populate_character_grid():
 		_create_control_button("del")
 
 func _python_server():
-	var output = []
-	OS.execute("run_server.bat", [], false, output)
-	print(output)
+	OS.execute("run_server.bat", [])
 	
 func _ready():
 
 	thread = Thread.new()
-	thread.start(self, "_python_server")
+	thread.start(Callable(self,"_python_server"))
 
-	_wsclient.connect("connection_closed", self, "_wsclosed")
-	_wsclient.connect("connection_error", self, "_wserror")
-	_wsclient.connect("connection_established", self, "_wsconnected")
-	_wsclient.connect("data_received", self, "_wsondata")
+	_wsclient.connect("connection_closed",Callable(self,"_wsclosed"))
+	_wsclient.connect("connection_error",Callable(self,"_wserror"))
+	_wsclient.connect("connection_established",Callable(self,"_wsconnected"))
+	_wsclient.connect("data_received",Callable(self,"_wsondata"))
 
 	var err = _wsclient.connect_to_url(websocket_url)
 
@@ -184,8 +180,10 @@ func _ready():
 		set_process(false)
 
 
-	file.open("res://data/character_rankings.json", File.READ)
-	character_frequency_data = parse_json(file.get_as_text())
+	var file = FileAccess.open("res://data/character_rankings.json", FileAccess.READ)
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(file.get_as_text())
+	character_frequency_data = test_json_conv.get_data()
 	$HBoxContainer/VBoxContainer/TextEdit.text = " "
 	_predict_next_character()
 	print(_wsclient)
@@ -300,15 +298,15 @@ func _process(delta):
 	_wsclient.poll()
 
 # Update our arrow showing gravity
-	get_node("HBoxContainer/Panel/ViewportContainer/Viewport/Spatial/Arrows/AccelerometerArrow").transform.basis = get_basis_for_arrow(acce)
+	get_node("HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Arrows/AccelerometerArrow").transform.basis = get_basis_for_arrow(acce)
 
 	# Update our arrow showing our magnetometer
 	# Note that in absense of other strong magnetic forces this will point to magnetic north, which is not horizontal thanks to the earth being, uhm, round
-	get_node("HBoxContainer/Panel/ViewportContainer/Viewport/Spatial/Arrows/MagnetoArrow").transform.basis = get_basis_for_arrow(mag)
+	get_node("HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Arrows/MagnetoArrow").transform.basis = get_basis_for_arrow(mag)
 
 	# Calculate our north vector and show that
 	var north = calc_north(acce,mag)
-	get_node("HBoxContainer/Panel/ViewportContainer/Viewport/Spatial/Arrows/NorthArrow").transform.basis = get_basis_for_arrow(north)
+	get_node("HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Arrows/NorthArrow").transform.basis = get_basis_for_arrow(north)
 
 
 	if mag.length() < 0.1:
@@ -317,11 +315,11 @@ func _process(delta):
 	if acce.length() < 0.1:
 		acce = Vector3(0.0, -1.0, 0.0)
 
-	var mesh = $HBoxContainer/Panel/ViewportContainer/Viewport/Spatial/MeshInstance
+	var mesh = $HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/MeshInstance3D
 	var new_basis = rotate_by_gyro(gyro, mesh.transform.basis, delta).orthonormalized()
 	mesh.transform.basis = drift_correction(new_basis, acce)
 
-	var mesh2 = $HBoxContainer/Panel/ViewportContainer/Viewport/Spatial/MeshInstance2
+	var mesh2 = $HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/MeshInstance2
 	mesh2.transform.basis = orientate_by_mag_and_grav(mag, acce).orthonormalized()
 
 func _wsconnected(proto = ""):
@@ -338,7 +336,9 @@ func _wserror(was_clean = false):
 func _wsondata():
 
 	var data = _wsclient.get_peer(1).get_packet().get_string_from_utf8()
-	var parsed_data = parse_json(data)
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(data)
+	var parsed_data = test_json_conv.get_data()
 #	var parsed_data = data.replace("[", "").replace("]", "").split(",")
 
 	var blink = parsed_data.blink
@@ -390,7 +390,7 @@ func _wsondata():
 
 	# var pitch = abs(atan2(-aY, aZ) * 180 / PI )
 	var rollupdown = abs(atan2(-aY, aZ) * 180 / PI)
-#	var rotation = stepify(abs(gZ), 0.01)
+#	var rotation = snapped(abs(gZ), 0.01)
 
 	var roll = atan2(-gY, -gZ)
 	var pitch = atan2(gX, -gZ)
@@ -411,7 +411,7 @@ func _wsondata():
 	else:
 		active_group = "top"
 
-	#var current_rotation = $HBoxContainer/Panel/ViewportContainer/Viewport/Spatial/MeshInstance.get_rotation_degrees().x
+	#var current_rotation = $HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/MeshInstance3D.get_rotation_degrees().x
 
 	var threshhold = 1
 	var base_rot = 5
@@ -484,7 +484,7 @@ func _wsondata():
 #			timer_started = true
 #	last_rotation = current_rotation
 
-func _add_text_to_input(var character):
+func _add_text_to_input(character):
 	$HBoxContainer/VBoxContainer/TextEdit.text += character
 	_predict_next_character()
 
@@ -499,14 +499,16 @@ func _predict_next_character(text_fill:=""):
 		query = { "text": "" }
 
 	if current_text.length()>0:
-		$HTTPRequest.request(nlp_server_url, headers, use_ssl, HTTPClient.METHOD_POST, to_json(query))
+		$HTTPRequest.request(nlp_server_url, headers,HTTPClient.METHOD_POST,JSON.new().stringify(query))
 	else:
 		$HTTPRequest.request(nlp_server_url)
 	current_page = 0
 
 func _on_HTTPRequest_request_completed(result, response_code, headers, body):
-	print(body)
-	var json = JSON.parse(body.get_string_from_utf8())
+	# print(body)
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(body.get_string_from_utf8())
+	var json = test_json_conv.get_data()
 
 	# clear node
 	var children = text_suggestions_node.get_children()
@@ -514,17 +516,19 @@ func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 		text_suggestions_node.remove_child(i)
 	
 	if $HBoxContainer/VBoxContainer/TextEdit.text.length() != 0:
-		next_characters = json.result['nextCharacters']
+		next_characters = json['nextCharacters']
 
 	if $HBoxContainer/VBoxContainer/TextEdit.text.length() != 0:
-		print(json.result['wordList'])
-		for i in json.result['wordList']:
-			var button = CharacterButton.instance()
+		# print(json.result['wordList'])
+		for i in json['wordList']:
+			var button = CharacterButton.instantiate()
 			var TrimmedText = i['sequence'].replace(".", "").split(' ')[-1]
+			print("Button Text: ", TrimmedText)
 			button.text = TrimmedText.to_lower()
-			button.get_node("TextureButton").connect("pressed", self, "_predict_next_character", [i['token_str']])
+			button.get_node("TextureButton").connect("pressed", Callable(self, "_predict_next_character").bind(i['token_str']))
 
-			text_suggestions_node.add_child(button)
+			if TrimmedText.length() > 0:
+				text_suggestions_node.add_child(button)
 
 	_populate_character_grid()
 
@@ -550,7 +554,7 @@ func _on_Buttontest_pressed():
 
 func _on_Timer_timeout():
 	timer_started = false
-	print("Move started"+active_direction)
+	# print("Move started"+active_direction)
 	_moveto_next_button()
 	# print("Cycle complete")
 
