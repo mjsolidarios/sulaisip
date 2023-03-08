@@ -488,7 +488,6 @@ func _add_text_to_input(character):
 	_predict_next_character()
 
 func _predict_next_character(text_fill:=""):
-	print("text fill = ")
 	var current_text = $HBoxContainer/VBoxContainer/TextEdit.text
 	if text_fill.length() > 0:
 		$HBoxContainer/VBoxContainer/TextEdit.text = current_text+text_fill+" "
@@ -523,7 +522,7 @@ func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 		for i in json['wordList']:
 			var button = CharacterButton.instantiate()
 			var TrimmedText = i['sequence'].replace(".", "").split(' ')[-1]
-			print("Button Text: ", TrimmedText)
+			print("Button Text: ", i['token_str'])
 			button.text = TrimmedText.to_lower()
 			button.get_node("TextureButton").connect("pressed", Callable(self, "_predict_next_character").bind(i['token_str']))
 

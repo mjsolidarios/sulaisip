@@ -86,7 +86,7 @@ def recommend():
     word_list = []
 
     if len(fuzzyword) > 0:
-        word_list = [{"sequence": fuzzyword[0], "score": fuzzyword[1],
+        word_list = [{"sequence": fuzzyword[0], "score": 1,
                       "token_str": fuzzyword[0].replace('', '')}] + res
     else:
         word_list = res
