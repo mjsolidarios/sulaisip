@@ -487,11 +487,18 @@ func _add_text_to_input(character):
 	$HBoxContainer/VBoxContainer/TextEdit.text += character
 	_predict_next_character()
 
-func _predict_next_character(text_fill:=""):
+func _predict_next_character(text_fill:="", score:=0):
 	var current_text = $HBoxContainer/VBoxContainer/TextEdit.text
 	if text_fill.length() > 0:
 		$HBoxContainer/VBoxContainer/TextEdit.text = current_text+text_fill+" "
-
+	print("score: ", score)
+	if score == 1:
+		var text_array = current_text.split(" ")
+		var last_text = text_array[text_array.size() - 1]
+		var trimmed_text_group = ""
+		for i in range(text_array.size() - 1):
+			trimmed_text_group += text_array[i]
+		$HBoxContainer/VBoxContainer/TextEdit.text = trimmed_text_group + " " + text_fill
 	if $HBoxContainer/VBoxContainer/TextEdit.text.length() > 0:
 		query = { "text": $HBoxContainer/VBoxContainer/TextEdit.text }
 	else:
@@ -522,9 +529,9 @@ func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 		for i in json['wordList']:
 			var button = CharacterButton.instantiate()
 			var TrimmedText = i['sequence'].replace(".", "").split(' ')[-1]
-			print("Button Text: ", i['token_str'])
+			#print("Button Text: ", i['token_str'])
 			button.text = TrimmedText.to_lower()
-			button.get_node("TextureButton").connect("pressed", Callable(self, "_predict_next_character").bind(i['token_str']))
+			button.get_node("TextureButton").connect("pressed", Callable(self, "_predict_next_character").bind(i['token_str'], i['score']))
 
 			if TrimmedText.length() > 0:
 				text_suggestions_node.add_child(button)
