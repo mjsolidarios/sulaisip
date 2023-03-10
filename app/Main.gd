@@ -39,6 +39,9 @@ var grav = Vector3(0,-1,0)
 
 var last_rotation = 0
 
+var time = 0 #86395
+var timer_on = false
+
 func _array_to_string(arr: Array) -> String:
 	var s = ""
 	for i in arr:
@@ -164,20 +167,19 @@ func _python_server():
 	
 func _ready():
 
+	_wsclient.connect_to_url(websocket_url)
+
 	thread = Thread.new()
 	thread.start(Callable(self,"_python_server"))
 
-	_wsclient.connect("connection_closed",Callable(self,"_wsclosed"))
-	_wsclient.connect("connection_error",Callable(self,"_wserror"))
-	_wsclient.connect("connection_established",Callable(self,"_wsconnected"))
-	_wsclient.connect("data_received",Callable(self,"_wsondata"))
+#	_wsclient.connect("connection_closed",Callable(self,"_wsclosed"))
+#	_wsclient.connect("connection_error",Callable(self,"_wserror"))
+#	_wsclient.connect("connection_established",Callable(self,"_wsconnected"))
+#	_wsclient.connect("data_received",Callable(self,"_wsondata"))
 
-	var err = _wsclient.connect_to_url(websocket_url)
-
-	if err != OK:
-		print("Unable to connect.")
-		set_process(false)
-
+#	if err != OK:
+#		print("Unable to connect.")
+#		set_process(false)
 
 	var file = FileAccess.open("res://data/character_rankings.json", FileAccess.READ)
 	var test_json_conv = JSON.new()
@@ -185,7 +187,7 @@ func _ready():
 	character_frequency_data = test_json_conv.get_data()
 	$HBoxContainer/VBoxContainer/TextEdit.text = " "
 	_predict_next_character()
-	print(_wsclient)
+	#print(_wsclient)
 	# websocket
 
 func _exit_tree():
@@ -269,6 +271,16 @@ func get_basis_for_arrow(p_vector):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	#_wsclient.poll()
+	if time == 0:
+		$HBoxContainer/VBoxContainer/HBoxContainer/ButtonStartTimer.disabled = false
+		$HBoxContainer/VBoxContainer/HBoxContainer/ButtonPauseTimer.disabled = true
+		$HBoxContainer/VBoxContainer/HBoxContainer/ButtonResetTimer.disabled = true
+	if time != 0:
+		$HBoxContainer/VBoxContainer/HBoxContainer/ButtonStartTimer.disabled = true
+		$HBoxContainer/VBoxContainer/HBoxContainer/ButtonPauseTimer.disabled = false
+		$HBoxContainer/VBoxContainer/HBoxContainer/ButtonResetTimer.disabled = false
+	
 	if active_group == "top":
 		$HBoxContainer/VBoxContainer/NinePatchRect.is_active = true
 		$HBoxContainer/VBoxContainer/NinePatchRect2.is_active = false
@@ -293,8 +305,36 @@ func _process(delta):
 				i.state="hover"
 			else:
 				i.state="normal"
+	
+	if(timer_on):
+		time += delta
+		
+	var mils = fmod(time,1)*1000
+	var secs = fmod(time,60)
+	var mins = fmod(time, 60*60) / 60
+	var hr = fmod(fmod(time,3600 * 60) / 3600,24)
+	var dy = fmod(time,12960000) / 86400
+	
+	var time_passed = "%02d : %02d : %02d : %02d : %03d" % [dy,hr,mins,secs,mils]
+	
+	$HBoxContainer/VBoxContainer/HBoxContainer/LabelTime.text = time_passed
 
 	_wsclient.poll()
+	
+	var state = _wsclient.get_ready_state()
+
+	# Web Socket
+	
+	if state == WebSocketPeer.STATE_OPEN:
+		while _wsclient.get_available_packet_count():
+			_wsondata()
+	elif state == WebSocketPeer.STATE_CLOSING:
+		pass
+	elif state == WebSocketPeer.STATE_CLOSED:
+		var code = _wsclient.get_close_code()
+		var reason = _wsclient.get_close_reason()
+		print("WebSocket closed with code: %d, reason %s. Clean: %s" % [code, reason, code != -1])
+		set_process(false)
 
 # Update our arrow showing gravity
 	get_node("HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Arrows/AccelerometerArrow").transform.basis = get_basis_for_arrow(acce)
@@ -334,7 +374,7 @@ func _wserror(was_clean = false):
 
 func _wsondata():
 
-	var data = _wsclient.get_peer(1).get_packet().get_string_from_utf8()
+	var data = _wsclient.get_packet().get_string_from_utf8()
 	var test_json_conv = JSON.new()
 	test_json_conv.parse(data)
 	var parsed_data = test_json_conv.get_data()
@@ -572,3 +612,20 @@ func _on_TimerPressButton_timeout():
 
 func _on_TextEdit_text_changed():
 	_predict_next_character()
+
+
+func _on_button_start_timer_pressed():
+	timer_on = true
+	$HBoxContainer/VBoxContainer/HBoxContainer/ButtonPauseTimer.text = "Pause"
+
+
+func _on_button_pause_timer_pressed():
+	if timer_on:
+		$HBoxContainer/VBoxContainer/HBoxContainer/ButtonPauseTimer.text = "Resume"
+	else:
+		$HBoxContainer/VBoxContainer/HBoxContainer/ButtonPauseTimer.text = "Pause"
+	timer_on = !timer_on
+
+
+func _on_button_reset_timer_pressed():
+	time = 0

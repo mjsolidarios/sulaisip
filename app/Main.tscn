@@ -121,12 +121,32 @@ columns = 8
 custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Control" type="Control" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LabelTime" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2")
-text = "Tip: Pumili ng letra  o salita para mahulaan ang susunod na salita."
+text = "Time:"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="ButtonStartTimer" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Start"
+
+[node name="ButtonPauseTimer" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Pause"
+
+[node name="ButtonResetTimer" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Reset"
 
 [node name="Control2" type="Control" parent="HBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 10)
@@ -216,6 +236,9 @@ wait_time = 1.5
 one_shot = true
 
 [connection signal="text_changed" from="HBoxContainer/VBoxContainer/TextEdit" to="." method="_on_TextEdit_text_changed"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/ButtonStartTimer" to="." method="_on_button_start_timer_pressed"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/ButtonPauseTimer" to="." method="_on_button_pause_timer_pressed"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/ButtonResetTimer" to="." method="_on_button_reset_timer_pressed"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/Buttontest" to="." method="_on_Buttontest_pressed"]
 [connection signal="request_completed" from="HTTPRequest" to="." method="_on_HTTPRequest_request_completed"]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
