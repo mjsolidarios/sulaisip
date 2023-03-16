@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://6ntcukqhlh6s"]
+[gd_scene load_steps=14 format=3 uid="uid://6ntcukqhlh6s"]
 
 [ext_resource type="Script" path="res://Main.gd" id="1"]
 [ext_resource type="FontFile" uid="uid://cgj5sujadlj8c" path="res://fonts/Roboto-Regular.ttf" id="2"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://b4icmscmu84f3" path="res://images/backspace-icon.png" id="8"]
 [ext_resource type="Texture2D" uid="uid://b5io3qm4lcaqr" path="res://images/arrow-right.png" id="9"]
 [ext_resource type="Texture2D" uid="uid://bxsosqtnx2elr" path="res://images/arrow-left.png" id="10"]
+[ext_resource type="FontFile" uid="uid://d2d6kyhwk1ari" path="res://fonts/Roboto-Medium.ttf" id="10_k6xyk"]
 
 [sub_resource type="BoxMesh" id="2"]
 
@@ -124,6 +125,20 @@ layout_mode = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2")
+text = "Base Rotation"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextEditBaseRotation" type="TextEdit" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("10_k6xyk")
+theme_override_font_sizes/font_size = 16
+text = "5"
 
 [node name="Control" type="Control" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2

@@ -38,6 +38,7 @@ var mag = Vector3(0,0,0)
 var grav = Vector3(0,-1,0)
 
 var last_rotation = 0
+var current_rotation = 0
 
 var time = 0 #86395
 var timer_on = false
@@ -453,23 +454,22 @@ func _wsondata():
 	#var current_rotation = $HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/MeshInstance3D.get_rotation_degrees().x
 
 	var threshhold = 1
-	var base_rot = 5
-	var last_rotation = 0
+	var stable_location = int($HBoxContainer/VBoxContainer/HBoxContainer/TextEditBaseRotation.text)
 	
-	var current_rotation = yaw
-	
-	if current_rotation > last_rotation + threshhold:
+	if yaw > last_rotation + threshhold:
 		active_direction = "right"
-	elif current_rotation < last_rotation - threshhold:
+	elif yaw < last_rotation - threshhold:
 		active_direction = "left"
 	else:
 		active_direction = "neutral"
-	last_rotation = current_rotation + threshhold
 	
 	if !(current_rotation + threshhold == last_rotation + threshhold):
 		if !timer_started:
 			$Timer.start()
-			timer_started = true	
+			timer_started = true
+		
+		last_rotation = current_rotation + threshhold
+	
 #	if yaw <= base_rot - threshhold:
 #		active_direction = "left"
 #	elif yaw >= base_rot + threshhold:
@@ -477,7 +477,7 @@ func _wsondata():
 #	else:
 #		active_direction = "neutral"
 		
-	# print(active_direction, yaw)
+	print("direction: ",active_direction, "; yaw: ",yaw, "; last_rotation: ", last_rotation)
 	
 
 	
