@@ -1,3 +1,4 @@
 res://default_env.tres
+res://components/CharacterButton.tscn
 res://Main.tscn
 res://Main.gd

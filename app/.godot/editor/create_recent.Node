@@ -1,3 +1,9 @@
+CollisionShape3D
+Area3D
+MeshInstance3D
+LightmapGI
+OmniLight3D
+WorldEnvironment
 TextEdit
 Control
 HSplitContainer

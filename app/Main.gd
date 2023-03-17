@@ -38,10 +38,20 @@ var mag = Vector3(0,0,0)
 var grav = Vector3(0,-1,0)
 
 var last_rotation = 0
-var current_rotation = 0
 
 var time = 0 #86395
 var timer_on = false
+
+var yaw = 0.0
+
+var threshold = 1
+
+#madwick filter
+var beta = 0.1
+var q0 = 1.0
+var q1 = 0.0
+var q2 = 0.0
+var q3 = 0.0
 
 func _array_to_string(arr: Array) -> String:
 	var s = ""
@@ -173,15 +183,6 @@ func _ready():
 	thread = Thread.new()
 	thread.start(Callable(self,"_python_server"))
 
-#	_wsclient.connect("connection_closed",Callable(self,"_wsclosed"))
-#	_wsclient.connect("connection_error",Callable(self,"_wserror"))
-#	_wsclient.connect("connection_established",Callable(self,"_wsconnected"))
-#	_wsclient.connect("data_received",Callable(self,"_wsondata"))
-
-#	if err != OK:
-#		print("Unable to connect.")
-#		set_process(false)
-
 	var file = FileAccess.open("res://data/character_rankings.json", FileAccess.READ)
 	var test_json_conv = JSON.new()
 	test_json_conv.parse(file.get_as_text())
@@ -190,6 +191,8 @@ func _ready():
 	_predict_next_character()
 	#print(_wsclient)
 	# websocket
+	
+	$HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3D1.connect()
 
 func _exit_tree():
 	thread.wait_to_finish()
@@ -391,6 +394,7 @@ func _wsondata():
 		right = parsed_data.aR
 	if parsed_data.has("push"):
 		right = parsed_data.push
+		
 	var gX = parsed_data.gX
 	var gY = parsed_data.gY
 	var gZ = parsed_data.gZ
@@ -401,85 +405,68 @@ func _wsondata():
 	var mY = parsed_data.mY
 	var mZ = parsed_data.mZ
 
-	var yaw = 0.0
-
 	gyro = Vector3(gX, gY, gZ)
 	acce = Vector3(aX, aY, aZ)
 	mag = Vector3(mX, mY, mZ)
-
-	# print("left: "+str(left),"|","right: "+str(right))
-
-#	if left > 0.8:
-#		active_direction = "left"
-#		if !timer_started:
-#			$Timer.start()
-#			timer_started = true
-#	if right > 0.8:
-#		active_direction = "right"
-#		if !timer_started:
-#			$Timer.start()
-#			timer_started = true
-
-	# print("left: "+str(left)+"|"+"right: "+str(right))
 
 	if push > 0:
 		if !timer_pressed_started:
 			$TimerPressButton.start()
 			timer_pressed_started = true
-		# blink = 0
+		# blink = 0	
 
 	# var pitch = abs(atan2(-aY, aZ) * 180 / PI )
 	var rollupdown = abs(atan2(-aY, aZ) * 180 / PI)
+	#var rollside = abs(atan2(-gX, gZ) * 180 / PI)
+	
+	var gyro = Vector3(gX, gY, gZ)
+	print(gyro)
 #	var rotation = snapped(abs(gZ), 0.01)
 
-	var roll = atan2(-gY, -gZ)
-	var pitch = atan2(gX, -gZ)
-	yaw = yaw * 0.98 + roll * 0.02
-
-	if yaw > 180:
-		yaw -= 360
-	elif yaw < -180:
-		yaw += 360
-	
-	yaw = round(yaw*1000)
-
-	#print(yaw)
-	# print(mZ, aZ, gZ)
-
-	if rollupdown > 100:
-		active_group = "bottom"
-	else:
-		active_group = "top"
+#	var roll = atan2(-gY, -gZ)
+#	var pitch = atan2(gX, -gZ)
+#	yaw = yaw * 0.98 + roll * 0.02
+#
+#	if yaw > 180:
+#		yaw -= 360
+#	elif yaw < -180:
+#		yaw += 360
+#
+#	if rollupdown > 100:
+#		active_group = "bottom"
+#	else:
+#		active_group = "top"
+#
+#	print("yaw: ", yaw*10)
 
 	#var current_rotation = $HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/MeshInstance3D.get_rotation_degrees().x
-
-	var threshhold = 1
-	var stable_location = int($HBoxContainer/VBoxContainer/HBoxContainer/TextEditBaseRotation.text)
 	
-	if yaw > last_rotation + threshhold:
-		active_direction = "right"
-	elif yaw < last_rotation - threshhold:
-		active_direction = "left"
-	else:
-		active_direction = "neutral"
-	
-	if !(current_rotation + threshhold == last_rotation + threshhold):
-		if !timer_started:
-			$Timer.start()
-			timer_started = true
-		
-		last_rotation = current_rotation + threshhold
-	
-#	if yaw <= base_rot - threshhold:
-#		active_direction = "left"
-#	elif yaw >= base_rot + threshhold:
+	#	if yaw > last_rotation:
 #		active_direction = "right"
+#	elif yaw < last_rotation:
+#		active_direction = "left"
 #	else:
 #		active_direction = "neutral"
-		
-	print("direction: ",active_direction, "; yaw: ",yaw, "; last_rotation: ", last_rotation)
 	
+#	if yaw > last_rotation + threshhold:
+#		active_direction = "right"
+#	elif yaw < last_rotation - threshhold:
+#		active_direction = "left"
+#	else:
+#		active_direction = "neutral"
+#
+#	if !(yaw + threshhold == last_rotation + threshhold):
+#	if !timer_started:
+#		$Timer.start()
+#		timer_started = true
+#
+#	if last_rotation != yaw:
+#		last_rotation = yaw
+	
+	#print (rotation_difference, " rotation_difference | yaw: ", yaw, " last_rotation: ", last_rotation)
+	#print("direction: ",active_direction, "; yaw: ",yaw, "; last_rotation: ", last_rotation)
 
+	var stable_location = int($HBoxContainer/VBoxContainer/HBoxContainer/TextEditBaseRotation.text)
 	
 	if active_button_top_index >= 4:
 		active_button_top_index = 0
@@ -489,39 +476,6 @@ func _wsondata():
 		active_button_bottom_grid_index = 0
 	if active_button_bottom_grid_index < 0:
 		active_button_bottom_grid_index = 0
-		
-	# print(active_button_top_index, ",", active_button_bottom_grid_index)
-
-
-#	if yaw > base_rot and yaw < base_rot + threshhold:
-#		active_direction = "neutral"
-#		if !timer_started:
-#			$Timer.start()
-#			timer_started = true
-#	if yaw < base_rot:
-#		active_direction = "left"
-#		if !timer_started:
-#			$Timer.start()
-#			timer_started = true
-#	if yaw > base_rot + threshhold:
-#		active_direction = "right"
-#		if !timer_started:
-#			$Timer.start()
-#			timer_started = true
-
-
-	# print(rotation)
-#	if current_rotation > last_rotation + threshhold:
-#		active_direction = "right"
-#		if !timer_started:
-#			$Timer.start()
-#			timer_started = true
-#	elif current_rotation < last_rotation + threshhold:
-#		active_direction = "left"
-#		if !timer_started:
-#			$Timer.start()
-#			timer_started = true
-#	last_rotation = current_rotation
 
 func _add_text_to_input(character):
 	$HBoxContainer/VBoxContainer/TextEdit.text += character
@@ -598,11 +552,9 @@ func _press_active_button():
 func _on_Buttontest_pressed():
 	_press_active_button()
 
-func _on_Timer_timeout():
+func _on_Timer_timeout():                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 	timer_started = false
-	# print("Move started"+active_direction)
 	_moveto_next_button()
-	# print("Cycle complete")
 
 
 func _on_TimerPressButton_timeout():
