@@ -1,5 +1,7 @@
-CollisionShape3D
+SpinBox
 Area3D
+CharacterBody3D
+CollisionShape3D
 MeshInstance3D
 LightmapGI
 OmniLight3D

@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://6ntcukqhlh6s"]
+[gd_scene load_steps=24 format=3 uid="uid://6ntcukqhlh6s"]
 
 [ext_resource type="Script" path="res://Main.gd" id="1"]
 [ext_resource type="FontFile" uid="uid://cgj5sujadlj8c" path="res://fonts/Roboto-Regular.ttf" id="2"]
@@ -9,7 +9,8 @@
 [ext_resource type="Texture2D" uid="uid://b4icmscmu84f3" path="res://images/backspace-icon.png" id="8"]
 [ext_resource type="Texture2D" uid="uid://b5io3qm4lcaqr" path="res://images/arrow-right.png" id="9"]
 [ext_resource type="Texture2D" uid="uid://bxsosqtnx2elr" path="res://images/arrow-left.png" id="10"]
-[ext_resource type="FontFile" uid="uid://d2d6kyhwk1ari" path="res://fonts/Roboto-Medium.ttf" id="10_k6xyk"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_y3ayv"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ph7rq"]
 shading_mode = 0
@@ -26,6 +27,9 @@ top_radius = 0.2
 bottom_radius = 0.1
 height = 4.0
 radial_segments = 16
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cragl"]
+size = Vector3(0.293878, 0.312605, 0.377713)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5vxy8"]
 shading_mode = 0
@@ -54,10 +58,11 @@ material = SubResource("ORMMaterial3D_xp7fe")
 top_radius = 0.1
 radial_segments = 16
 
-[sub_resource type="BoxMesh" id="BoxMesh_1qb2f"]
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_a2wy7"]
 size = Vector3(1.03425, 1, 2.25153)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ck8d3"]
+size = Vector3(0.0849832, 1, 2.25153)
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -70,12 +75,10 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
 nlp_server_url = "http://127.0.0.1:5000"
-websocket_url = null
 icon_del = ExtResource("8")
 icon_prev = ExtResource("10")
 icon_next = ExtResource("9")
 active_group = "bottom"
-active_button_top_index = null
 active_button_bottom_grid_index = 1
 
 [node name="HBoxContainer" type="GridContainer" parent="."]
@@ -169,16 +172,15 @@ theme_override_constants/separation = 10
 [node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2")
-text = "Base Rotation"
+text = "Center Callibration"
+label_settings = SubResource("LabelSettings_y3ayv")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="TextEditBaseRotation" type="TextEdit" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(100, 0)
+[node name="SpinBoxCallibration" type="SpinBox" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("10_k6xyk")
-theme_override_font_sizes/font_size = 16
-text = "5"
+max_value = 1.0
+step = 0.01
 
 [node name="Control" type="Control" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -231,17 +233,19 @@ stretch = true
 transparent_bg = true
 handle_input_locally = false
 gui_disable_input = true
-size = Vector2i(248, 317)
+size = Vector2i(248, 334)
 size_2d_override_stretch = true
 render_target_update_mode = 4
 
 [node name="Node3D" type="Node3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport"]
 
 [node name="Camera3D" type="Camera3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, -2.41405)
-v_offset = 0.258
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, -5.27548)
+v_offset = 0.825
+projection = 1
 current = true
-fov = 46.2
+fov = 83.5
+size = 1.5
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D"]
 visible = false
@@ -262,9 +266,17 @@ transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 mesh = SubResource("7")
 
-[node name="Top" type="MeshInstance3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Arrows/AccelerometerArrow"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+[node name="PointerArea" type="Area3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Arrows/AccelerometerArrow"]
+transform = Transform3D(1, 0, 0, 0, 1, -2.84217e-14, 0, 2.84217e-14, 1, 0, 4.88363, -4.76837e-07)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Arrows/AccelerometerArrow/PointerArea"]
+transform = Transform3D(1, 0, 0, 0, 1, -2.13163e-14, 0, 2.13163e-14, 1, 0, 1.15067, 0)
+shape = SubResource("BoxShape3D_cragl")
+
+[node name="Top" type="MeshInstance3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Arrows/AccelerometerArrow/PointerArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 7.10543e-15, 0, -7.10543e-15, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_eqi5d")
+skeleton = NodePath("../..")
 
 [node name="MagnetoArrow" type="Node3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Arrows"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -289,26 +301,25 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
 mesh = SubResource("9")
 
 [node name="Area3D1" type="Area3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D"]
-
-[node name="BoxGuide2" type="MeshInstance3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3D1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 2.224, -0.876202, 0, 0.84819)
-mesh = SubResource("BoxMesh_1qb2f")
-skeleton = NodePath("../..")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.83239, 0)
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3D1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.876202, 0, 0.84819)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.637311, 0, 0.84819)
 shape = SubResource("BoxShape3D_a2wy7")
 
 [node name="Area3D2" type="Area3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D"]
-
-[node name="BoxGuide2" type="MeshInstance3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3D2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 2.224, 0.859175, 0, 0.84819)
-mesh = SubResource("BoxMesh_1qb2f")
-skeleton = NodePath("../..")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.83239, 0)
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3D2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.859175, 0, 0.84819)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.638686, 0, 0.84819)
 shape = SubResource("BoxShape3D_a2wy7")
+
+[node name="Area3D3" type="Area3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.83239, 0)
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00122172, 0, 0.84819)
+shape = SubResource("BoxShape3D_ck8d3")
 
 [node name="HTTPRequest" type="HTTPRequest" parent="."]
 
@@ -323,6 +334,9 @@ one_shot = true
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/ButtonPauseTimer" to="." method="_on_button_pause_timer_pressed"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/ButtonResetTimer" to="." method="_on_button_reset_timer_pressed"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/Buttontest" to="." method="_on_Buttontest_pressed"]
+[connection signal="area_entered" from="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3D1" to="." method="_on_area_3d_1_area_entered"]
+[connection signal="area_entered" from="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3D2" to="." method="_on_area_3d_2_area_entered"]
+[connection signal="area_entered" from="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3D3" to="." method="_on_area_3d_3_area_entered"]
 [connection signal="request_completed" from="HTTPRequest" to="." method="_on_HTTPRequest_request_completed"]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
 [connection signal="timeout" from="TimerPressButton" to="." method="_on_TimerPressButton_timeout"]

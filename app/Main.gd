@@ -46,12 +46,7 @@ var yaw = 0.0
 
 var threshold = 1
 
-#madwick filter
-var beta = 0.1
-var q0 = 1.0
-var q1 = 0.0
-var q2 = 0.0
-var q3 = 0.0
+var stable_location: SpinBox
 
 func _array_to_string(arr: Array) -> String:
 	var s = ""
@@ -175,6 +170,9 @@ func _populate_character_grid():
 
 func _python_server():
 	OS.execute("run_server.bat", [])
+
+func switch_direction(mode:String="neutral"):
+	active_direction = mode
 	
 func _ready():
 
@@ -182,6 +180,8 @@ func _ready():
 
 	thread = Thread.new()
 	thread.start(Callable(self,"_python_server"))
+	
+	stable_location = $HBoxContainer/VBoxContainer/HBoxContainer/SpinBoxCallibration
 
 	var file = FileAccess.open("res://data/character_rankings.json", FileAccess.READ)
 	var test_json_conv = JSON.new()
@@ -191,8 +191,6 @@ func _ready():
 	_predict_next_character()
 	#print(_wsclient)
 	# websocket
-	
-	$HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3D1.connect()
 
 func _exit_tree():
 	thread.wait_to_finish()
@@ -404,9 +402,11 @@ func _wsondata():
 	var mX = parsed_data.mX
 	var mY = parsed_data.mY
 	var mZ = parsed_data.mZ
+	
+	var correction = stable_location.value
 
 	gyro = Vector3(gX, gY, gZ)
-	acce = Vector3(aX, aY, aZ)
+	acce = Vector3(aX-correction, aY-correction, aZ)
 	mag = Vector3(mX, mY, mZ)
 
 	if push > 0:
@@ -417,56 +417,25 @@ func _wsondata():
 
 	# var pitch = abs(atan2(-aY, aZ) * 180 / PI )
 	var rollupdown = abs(atan2(-aY, aZ) * 180 / PI)
-	#var rollside = abs(atan2(-gX, gZ) * 180 / PI)
 	
 	var gyro = Vector3(gX, gY, gZ)
-	print(gyro)
-#	var rotation = snapped(abs(gZ), 0.01)
 
-#	var roll = atan2(-gY, -gZ)
+
+	var roll = atan2(-gY, -gZ)
 #	var pitch = atan2(gX, -gZ)
 #	yaw = yaw * 0.98 + roll * 0.02
-#
-#	if yaw > 180:
-#		yaw -= 360
-#	elif yaw < -180:
-#		yaw += 360
-#
-#	if rollupdown > 100:
-#		active_group = "bottom"
-#	else:
-#		active_group = "top"
-#
-#	print("yaw: ", yaw*10)
 
-	#var current_rotation = $HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/MeshInstance3D.get_rotation_degrees().x
-	
-	#	if yaw > last_rotation:
-#		active_direction = "right"
-#	elif yaw < last_rotation:
-#		active_direction = "left"
-#	else:
-#		active_direction = "neutral"
-	
-#	if yaw > last_rotation + threshhold:
-#		active_direction = "right"
-#	elif yaw < last_rotation - threshhold:
-#		active_direction = "left"
-#	else:
-#		active_direction = "neutral"
+#
+	if rollupdown > 100:
+		active_group = "bottom"
+	else:
+		active_group = "top"
 #
 #	if !(yaw + threshhold == last_rotation + threshhold):
-#	if !timer_started:
-#		$Timer.start()
-#		timer_started = true
-#
-#	if last_rotation != yaw:
-#		last_rotation = yaw
-	
-	#print (rotation_difference, " rotation_difference | yaw: ", yaw, " last_rotation: ", last_rotation)
-	#print("direction: ",active_direction, "; yaw: ",yaw, "; last_rotation: ", last_rotation)
-
-	var stable_location = int($HBoxContainer/VBoxContainer/HBoxContainer/TextEditBaseRotation.text)
+	if active_direction != "neutral":
+		if !timer_started:
+			$Timer.start()
+			timer_started = true
 	
 	if active_button_top_index >= 4:
 		active_button_top_index = 0
@@ -581,3 +550,16 @@ func _on_button_pause_timer_pressed():
 
 func _on_button_reset_timer_pressed():
 	time = 0
+
+
+func _on_area_3d_2_area_entered(area):
+	switch_direction("left")
+
+
+func _on_area_3d_1_area_entered(area):
+	switch_direction("right")
+
+
+func _on_area_3d_3_area_entered(area):
+	print("neutral")
+	switch_direction("neutral")
