@@ -1,7 +1,8 @@
 extends Control
 
-# Tagalog to type: Ang bawat rumehistrong kalahok sa patimpalak ay nagantimpalaan
+# Tagalog to type: Ang bawat rumehistro ng kalahok sa patimpalak ay nagantimpalaan
 # Conversational: Oo, Hindi, Kamusta, Ayos, Paumanhin, Salamat, Sige, Meron, Wala, Pakiusap
+
 var data
 var character_frequency_data:Dictionary
 var CharacterButton = preload("res://components/CharacterButton.tscn")
@@ -46,7 +47,10 @@ var yaw = 0.0
 
 var threshold = 1
 
-var stable_location: SpinBox
+var stable_location:  SpinBox #SpinBoxMotionEq
+var nav_left_sensitivity: SpinBox
+var nav_right_sensitivity: SpinBox
+var mental_command_sensitivity: SpinBox
 
 func _array_to_string(arr: Array) -> String:
 	var s = ""
@@ -181,8 +185,13 @@ func _ready():
 	thread = Thread.new()
 	thread.start(Callable(self,"_python_server"))
 	
-	stable_location = $HBoxContainer/VBoxContainer/HBoxContainer/SpinBoxCallibration
+	stable_location = $PanelSettings/Panel/MarginContainer/VBoxContainer/SpinBoxMotionEq
+	nav_left_sensitivity = $PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer/SpinBoxNavL
+	nav_right_sensitivity = $PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer/SpinBoxNavR
+	mental_command_sensitivity = $PanelSettings/Panel/MarginContainer/VBoxContainer/SpinBoxMentalCom
 
+	$PanelSettings.visible = false
+	
 	var file = FileAccess.open("res://data/character_rankings.json", FileAccess.READ)
 	var test_json_conv = JSON.new()
 	test_json_conv.parse(file.get_as_text())
@@ -320,6 +329,19 @@ func _process(delta):
 	var time_passed = "%02d : %02d : %02d : %02d : %03d" % [dy,hr,mins,secs,mils]
 	
 	$HBoxContainer/VBoxContainer/HBoxContainer/LabelTime.text = time_passed
+	
+	var current_text: String = $HBoxContainer/VBoxContainer/TextEdit.text
+	var word_counter: int = 0
+	var char_counter: int = 0
+	
+	for i in current_text.split(""):
+		if i != " ":
+			char_counter += 1
+	for j in current_text.split(" "):
+		if j != "":
+			word_counter += 1
+	
+	$HBoxContainer/VBoxContainer/HBoxContainer/LabelTextCounter.text = str(word_counter)+" words, "+str(char_counter)+" characters"
 
 	_wsclient.poll()
 	
@@ -460,8 +482,8 @@ func _predict_next_character(text_fill:="", score:=0):
 		var last_text = text_array[text_array.size() - 1]
 		var trimmed_text_group = ""
 		for i in range(text_array.size() - 1):
-			trimmed_text_group += text_array[i]
-		$HBoxContainer/VBoxContainer/TextEdit.text = trimmed_text_group + " " + text_fill
+			trimmed_text_group += text_array[i] + " "
+		$HBoxContainer/VBoxContainer/TextEdit.text = trimmed_text_group + text_fill + " "
 	if $HBoxContainer/VBoxContainer/TextEdit.text.length() > 0:
 		query = { "text": $HBoxContainer/VBoxContainer/TextEdit.text }
 	else:
@@ -563,3 +585,11 @@ func _on_area_3d_1_area_entered(area):
 func _on_area_3d_3_area_entered(area):
 	print("neutral")
 	switch_direction("neutral")
+
+
+func _on_button_close_sensor_callib_pressed():
+	$PanelSettings.visible = false
+
+
+func _on_button_settings_pressed():
+	$PanelSettings.visible = true

@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://6ntcukqhlh6s"]
+[gd_scene load_steps=25 format=3 uid="uid://6ntcukqhlh6s"]
 
 [ext_resource type="Script" path="res://Main.gd" id="1"]
 [ext_resource type="FontFile" uid="uid://cgj5sujadlj8c" path="res://fonts/Roboto-Regular.ttf" id="2"]
@@ -9,8 +9,6 @@
 [ext_resource type="Texture2D" uid="uid://b4icmscmu84f3" path="res://images/backspace-icon.png" id="8"]
 [ext_resource type="Texture2D" uid="uid://b5io3qm4lcaqr" path="res://images/arrow-right.png" id="9"]
 [ext_resource type="Texture2D" uid="uid://bxsosqtnx2elr" path="res://images/arrow-left.png" id="10"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_y3ayv"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ph7rq"]
 shading_mode = 0
@@ -63,6 +61,16 @@ size = Vector3(1.03425, 1, 2.25153)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ck8d3"]
 size = Vector3(0.0849832, 1, 2.25153)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8vbwy"]
+bg_color = Color(0, 0, 0, 0.627451)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_afns3"]
+bg_color = Color(0.211765, 0.211765, 0.211765, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -169,22 +177,9 @@ layout_mode = 2
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="ControlWidth" type="Control" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2")
-text = "Center Callibration"
-label_settings = SubResource("LabelSettings_y3ayv")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="SpinBoxCallibration" type="SpinBox" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-max_value = 1.0
-step = 0.01
-
-[node name="Control" type="Control" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
 
 [node name="LabelTime" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -204,6 +199,25 @@ text = "Pause"
 [node name="ButtonResetTimer" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Reset"
+
+[node name="Control" type="Control" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LabelTextCounter" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2")
+text = "0 words, 0 characters"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ButtonSettings" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Settings"
+
+[node name="ControlWidth2" type="Control" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
 
 [node name="Control2" type="Control" parent="HBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 10)
@@ -240,7 +254,7 @@ render_target_update_mode = 4
 [node name="Node3D" type="Node3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport"]
 
 [node name="Camera3D" type="Camera3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, -5.27548)
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -0.01, 0, -5.275)
 v_offset = 0.825
 projection = 1
 current = true
@@ -329,10 +343,118 @@ wait_time = 1.5
 [node name="TimerPressButton" type="Timer" parent="."]
 one_shot = true
 
+[node name="PanelSettings" type="Panel" parent="."]
+visible = false
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8vbwy")
+
+[node name="Panel" type="Panel" parent="PanelSettings"]
+custom_minimum_size = Vector2(500, 300)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -150.0
+offset_right = 250.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_afns3")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelSettings/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelSettings/Panel/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 23
+text = "Sensor Callibration"
+
+[node name="Label4" type="Label" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Key Navigation Sensitivity"
+
+[node name="HBoxContainer" type="GridContainer" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+columns = 3
+
+[node name="SpinBoxNavL" type="SpinBox" parent="PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -1.0
+max_value = 1.0
+step = 0.1
+prefix = "L"
+
+[node name="SpinBoxNavR" type="SpinBox" parent="PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -1.0
+max_value = 1.0
+step = 0.1
+prefix = "R"
+
+[node name="SpinBoxNavR2" type="SpinBox" parent="PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -1.0
+max_value = 1.0
+step = 0.1
+prefix = "TD"
+
+[node name="Label2" type="Label" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Mental Command Sensitivity"
+
+[node name="SpinBoxMentalCom" type="SpinBox" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+min_value = -1.0
+max_value = 1.0
+step = 0.1
+
+[node name="Label3" type="Label" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Motion Equilibrium"
+
+[node name="SpinBoxMotionEq" type="SpinBox" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+min_value = -1.0
+max_value = 1.0
+step = 0.1
+
+[node name="Control" type="Control" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="ButtonCloseSensorCallib" type="Button" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Close"
+
 [connection signal="text_changed" from="HBoxContainer/VBoxContainer/TextEdit" to="." method="_on_TextEdit_text_changed"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/ButtonStartTimer" to="." method="_on_button_start_timer_pressed"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/ButtonPauseTimer" to="." method="_on_button_pause_timer_pressed"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/ButtonResetTimer" to="." method="_on_button_reset_timer_pressed"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/ButtonSettings" to="." method="_on_button_settings_pressed"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/Buttontest" to="." method="_on_Buttontest_pressed"]
 [connection signal="area_entered" from="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3D1" to="." method="_on_area_3d_1_area_entered"]
 [connection signal="area_entered" from="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3D2" to="." method="_on_area_3d_2_area_entered"]
@@ -340,3 +462,4 @@ one_shot = true
 [connection signal="request_completed" from="HTTPRequest" to="." method="_on_HTTPRequest_request_completed"]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
 [connection signal="timeout" from="TimerPressButton" to="." method="_on_TimerPressButton_timeout"]
+[connection signal="pressed" from="PanelSettings/Panel/MarginContainer/VBoxContainer/ButtonCloseSensorCallib" to="." method="_on_button_close_sensor_callib_pressed"]

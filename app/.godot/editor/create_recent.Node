@@ -1,4 +1,14 @@
+Control
+Button
+ProgressBar
+Panel
+GridContainer
+Label
 SpinBox
+HBoxContainer
+MarginContainer
+VBoxContainer
+PopupPanel
 Area3D
 CharacterBody3D
 CollisionShape3D
@@ -7,7 +17,4 @@ LightmapGI
 OmniLight3D
 WorldEnvironment
 TextEdit
-Control
 HSplitContainer
-Button
-HBoxContainer
