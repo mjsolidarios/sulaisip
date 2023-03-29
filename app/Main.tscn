@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://6ntcukqhlh6s"]
+[gd_scene load_steps=29 format=3 uid="uid://6ntcukqhlh6s"]
 
 [ext_resource type="Script" path="res://Main.gd" id="1"]
 [ext_resource type="FontFile" uid="uid://cgj5sujadlj8c" path="res://fonts/Roboto-Regular.ttf" id="2"]
@@ -58,6 +58,20 @@ radial_segments = 16
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_a2wy7"]
 size = Vector3(1.03425, 1, 2.25153)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e5adu"]
+shading_mode = 0
+albedo_color = Color(0.243137, 0.243137, 0.243137, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_inoid"]
+material = SubResource("StandardMaterial3D_e5adu")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uae3n"]
+shading_mode = 0
+albedo_color = Color(0.258824, 0.258824, 0.258824, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_ujrmg"]
+material = SubResource("StandardMaterial3D_uae3n")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ck8d3"]
 size = Vector3(0.0849832, 1, 2.25153)
@@ -314,24 +328,38 @@ mesh = SubResource("7")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
 mesh = SubResource("9")
 
-[node name="Area3D1" type="Area3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D"]
+[node name="Area3DRight" type="Area3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.83239, 0)
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3D1"]
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3DRight"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.637311, 0, 0.84819)
 shape = SubResource("BoxShape3D_a2wy7")
 
-[node name="Area3D2" type="Area3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D"]
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3DRight"]
+transform = Transform3D(1.0323, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, -0.636432, 0, 1.92264)
+mesh = SubResource("QuadMesh_inoid")
+skeleton = NodePath("../../Area3DCenter")
+
+[node name="Area3DLeft" type="Area3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.83239, 0)
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3D2"]
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3DLeft"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.638686, 0, 0.84819)
 shape = SubResource("BoxShape3D_a2wy7")
 
-[node name="Area3D3" type="Area3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3DLeft"]
+transform = Transform3D(1.04328, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0.642008, 0, 1.92264)
+mesh = SubResource("QuadMesh_inoid")
+
+[node name="Area3DCenter" type="Area3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.83239, 0)
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3D3"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3DCenter"]
+transform = Transform3D(0.0824726, 0, 0, 0, -1, 1.94718e-07, 0, -8.74228e-08, -2.22732, 0.000225902, 0, 1.92346)
+mesh = SubResource("QuadMesh_ujrmg")
+skeleton = NodePath("../../Area3DRight")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3DCenter"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00122172, 0, 0.84819)
 shape = SubResource("BoxShape3D_ck8d3")
 
@@ -344,7 +372,6 @@ wait_time = 1.5
 one_shot = true
 
 [node name="PanelSettings" type="Panel" parent="."]
-visible = false
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 1
 anchors_preset = 15
@@ -403,7 +430,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 min_value = -1.0
 max_value = 1.0
-step = 0.1
+step = 0.01
 prefix = "L"
 
 [node name="SpinBoxNavR" type="SpinBox" parent="PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
@@ -411,10 +438,10 @@ layout_mode = 2
 size_flags_horizontal = 3
 min_value = -1.0
 max_value = 1.0
-step = 0.1
+step = 0.01
 prefix = "R"
 
-[node name="SpinBoxNavR2" type="SpinBox" parent="PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="SpinBoxNavTD" type="SpinBox" parent="PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = -1.0
@@ -422,21 +449,21 @@ max_value = 1.0
 step = 0.1
 prefix = "TD"
 
-[node name="Label2" type="Label" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "Mental Command Sensitivity"
-
-[node name="SpinBoxMentalCom" type="SpinBox" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
-layout_mode = 2
-min_value = -1.0
-max_value = 1.0
-step = 0.1
-
 [node name="Label3" type="Label" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Motion Equilibrium"
 
 [node name="SpinBoxMotionEq" type="SpinBox" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+min_value = -1.0
+max_value = 1.0
+step = 0.1
+
+[node name="Label2" type="Label" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Mental Command Sensitivity"
+
+[node name="SpinBoxMentalCom" type="SpinBox" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 min_value = -1.0
 max_value = 1.0
@@ -456,9 +483,9 @@ text = "Close"
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/ButtonResetTimer" to="." method="_on_button_reset_timer_pressed"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/ButtonSettings" to="." method="_on_button_settings_pressed"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/Buttontest" to="." method="_on_Buttontest_pressed"]
-[connection signal="area_entered" from="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3D1" to="." method="_on_area_3d_1_area_entered"]
-[connection signal="area_entered" from="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3D2" to="." method="_on_area_3d_2_area_entered"]
-[connection signal="area_entered" from="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3D3" to="." method="_on_area_3d_3_area_entered"]
+[connection signal="area_entered" from="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3DRight" to="." method="_on_area_3d_1_area_entered"]
+[connection signal="area_entered" from="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3DLeft" to="." method="_on_area_3d_2_area_entered"]
+[connection signal="area_entered" from="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3DCenter" to="." method="_on_area_3d_3_area_entered"]
 [connection signal="request_completed" from="HTTPRequest" to="." method="_on_HTTPRequest_request_completed"]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
 [connection signal="timeout" from="TimerPressButton" to="." method="_on_TimerPressButton_timeout"]

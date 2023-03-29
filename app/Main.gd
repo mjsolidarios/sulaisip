@@ -50,6 +50,7 @@ var threshold = 1
 var stable_location:  SpinBox #SpinBoxMotionEq
 var nav_left_sensitivity: SpinBox
 var nav_right_sensitivity: SpinBox
+var nav_top_down_sensitivity: SpinBox
 var mental_command_sensitivity: SpinBox
 
 func _array_to_string(arr: Array) -> String:
@@ -189,7 +190,8 @@ func _ready():
 	nav_left_sensitivity = $PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer/SpinBoxNavL
 	nav_right_sensitivity = $PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer/SpinBoxNavR
 	mental_command_sensitivity = $PanelSettings/Panel/MarginContainer/VBoxContainer/SpinBoxMentalCom
-
+	nav_top_down_sensitivity = $PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer/SpinBoxNavTD
+	
 	$PanelSettings.visible = false
 	
 	var file = FileAccess.open("res://data/character_rankings.json", FileAccess.READ)
@@ -330,6 +332,10 @@ func _process(delta):
 	
 	$HBoxContainer/VBoxContainer/HBoxContainer/LabelTime.text = time_passed
 	
+	# Left and right sensor box
+	$HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3DLeft.position = Vector3(nav_left_sensitivity.value,0.83,0)
+	$HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3DRight.position = Vector3(nav_right_sensitivity.value*-1,0.83,0)
+	
 	var current_text: String = $HBoxContainer/VBoxContainer/TextEdit.text
 	var word_counter: int = 0
 	var char_counter: int = 0
@@ -448,7 +454,7 @@ func _wsondata():
 #	yaw = yaw * 0.98 + roll * 0.02
 
 #
-	if rollupdown > 100:
+	if rollupdown > nav_top_down_sensitivity.value * 100:
 		active_group = "bottom"
 	else:
 		active_group = "top"
