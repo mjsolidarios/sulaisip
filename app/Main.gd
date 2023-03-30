@@ -99,7 +99,6 @@ func _moveto_next_button():
 
 	# print(active_button_top_index, ",", active_button_bottom_grid_index)
 
-
 func _del_char():
 	var text = $HBoxContainer/VBoxContainer/TextEdit.text
 	if text.length() > 0:
@@ -178,7 +177,7 @@ func _python_server():
 
 func switch_direction(mode:String="neutral"):
 	active_direction = mode
-	
+
 func _ready():
 
 	_wsclient.connect_to_url(websocket_url)
@@ -318,7 +317,7 @@ func _process(delta):
 				i.state="hover"
 			else:
 				i.state="normal"
-	
+
 	if(timer_on):
 		time += delta
 		
@@ -420,7 +419,7 @@ func _wsondata():
 		right = parsed_data.aR
 	if parsed_data.has("push"):
 		right = parsed_data.push
-		
+
 	var gX = parsed_data.gX
 	var gY = parsed_data.gY
 	var gZ = parsed_data.gZ
@@ -437,7 +436,8 @@ func _wsondata():
 	acce = Vector3(aX-correction, aY-correction, aZ)
 	mag = Vector3(mX, mY, mZ)
 
-	if push > 0:
+	# Push Sensitivity
+	if push > mental_command_sensitivity.value:
 		if !timer_pressed_started:
 			$TimerPressButton.start()
 			timer_pressed_started = true
@@ -445,20 +445,18 @@ func _wsondata():
 
 	# var pitch = abs(atan2(-aY, aZ) * 180 / PI )
 	var rollupdown = abs(atan2(-aY, aZ) * 180 / PI)
-	
-	var gyro = Vector3(gX, gY, gZ)
 
+	var gyro = Vector3(gX, gY, gZ)
 
 	var roll = atan2(-gY, -gZ)
 #	var pitch = atan2(gX, -gZ)
 #	yaw = yaw * 0.98 + roll * 0.02
 
-#
 	if rollupdown > nav_top_down_sensitivity.value * 100:
 		active_group = "bottom"
 	else:
 		active_group = "top"
-#
+
 #	if !(yaw + threshhold == last_rotation + threshhold):
 	if active_direction != "neutral":
 		if !timer_started:
