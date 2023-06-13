@@ -410,6 +410,7 @@ func _wsondata():
 #	var parsed_data = data.replace("[", "").replace("]", "").split(",")
 
 	var blink = parsed_data.blink
+	var smile = parsed_data.smile
 	var left = 0
 	var right = 0
 	var push = 0
@@ -436,12 +437,23 @@ func _wsondata():
 	acce = Vector3(aX-correction, aY-correction, aZ)
 	mag = Vector3(mX, mY, mZ)
 
-	# Push Sensitivity
-	if push > mental_command_sensitivity.value:
+	if smile == 100:
 		if !timer_pressed_started:
 			$TimerPressButton.start()
 			timer_pressed_started = true
-		# blink = 0	
+	print(smile)
+#	if blink == 100:
+#		if !timer_pressed_started:
+#			$TimerPressButton.start()
+#			timer_pressed_started = true
+
+	# Push Sensitivity
+#	print(blink)
+#	if push > mental_command_sensitivity.value:
+#		if !timer_pressed_started:
+#			$TimerPressButton.start()
+#			timer_pressed_started = true
+#		# blink = 0	
 
 	# var pitch = abs(atan2(-aY, aZ) * 180 / PI )
 	var rollupdown = abs(atan2(-aY, aZ) * 180 / PI)
@@ -597,3 +609,8 @@ func _on_button_close_sensor_callib_pressed():
 
 func _on_button_settings_pressed():
 	$PanelSettings.visible = true
+
+
+func _on_button_settings_2_pressed():
+	$HBoxContainer/VBoxContainer/TextEdit.text = " "
+	_predict_next_character()

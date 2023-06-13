@@ -120,6 +120,8 @@ custom_minimum_size = Vector2(0, 65)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2")
 theme_override_font_sizes/font_size = 42
+wrap_mode = 1
+scroll_smooth = true
 caret_blink = true
 
 [node name="NinePatchRect" type="NinePatchRect" parent="HBoxContainer/VBoxContainer"]
@@ -226,6 +228,10 @@ vertical_alignment = 1
 [node name="ButtonSettings" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Settings"
+
+[node name="ButtonSettings2" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Clear"
 
 [node name="ControlWidth2" type="Control" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(10, 0)
@@ -370,6 +376,7 @@ wait_time = 1.5
 one_shot = true
 
 [node name="PanelSettings" type="Panel" parent="."]
+visible = false
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 1
 anchors_preset = 15
@@ -480,6 +487,7 @@ text = "Close"
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/ButtonPauseTimer" to="." method="_on_button_pause_timer_pressed"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/ButtonResetTimer" to="." method="_on_button_reset_timer_pressed"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/ButtonSettings" to="." method="_on_button_settings_pressed"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/ButtonSettings2" to="." method="_on_button_settings_2_pressed"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/Buttontest" to="." method="_on_Buttontest_pressed"]
 [connection signal="area_entered" from="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3DRight" to="." method="_on_area_3d_1_area_entered"]
 [connection signal="area_entered" from="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3DLeft" to="." method="_on_area_3d_2_area_entered"]
