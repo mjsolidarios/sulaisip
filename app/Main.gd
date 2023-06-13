@@ -523,7 +523,8 @@ func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 		text_suggestions_node.remove_child(i)
 	
 	if $HBoxContainer/VBoxContainer/TextEdit.text.length() != 0:
-		next_characters = json['nextCharacters']
+		if str(json).length()>0:
+			next_characters = json['nextCharacters']
 
 	if $HBoxContainer/VBoxContainer/TextEdit.text.length() != 0:
 		# print(json.result['wordList'])

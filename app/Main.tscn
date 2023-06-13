@@ -116,12 +116,14 @@ custom_minimum_size = Vector2(900, 0)
 layout_mode = 2
 
 [node name="TextEdit" type="TextEdit" parent="HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 65)
+custom_minimum_size = Vector2(0, 130)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2")
 theme_override_font_sizes/font_size = 42
+placeholder_text = "Ang bawat rumehistro ng kalahok sa patimpalak ay nagantimpalaan"
 wrap_mode = 1
 scroll_smooth = true
+minimap_draw = true
 caret_blink = true
 
 [node name="NinePatchRect" type="NinePatchRect" parent="HBoxContainer/VBoxContainer"]
@@ -265,7 +267,7 @@ stretch = true
 transparent_bg = true
 handle_input_locally = false
 gui_disable_input = true
-size = Vector2i(248, 334)
+size = Vector2i(248, 399)
 size_2d_override_stretch = true
 render_target_update_mode = 4
 
@@ -376,7 +378,6 @@ wait_time = 1.5
 one_shot = true
 
 [node name="PanelSettings" type="Panel" parent="."]
-visible = false
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 1
 anchors_preset = 15
@@ -452,7 +453,8 @@ size_flags_horizontal = 3
 min_value = -1.0
 max_value = 1.0
 step = 0.1
-prefix = "TD"
+value = 1.0
+prefix = "TopDown"
 
 [node name="Label3" type="Label" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -465,10 +467,12 @@ max_value = 1.0
 step = 0.1
 
 [node name="Label2" type="Label" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 text = "Mental Command Sensitivity"
 
 [node name="SpinBoxMentalCom" type="SpinBox" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 min_value = -1.0
 max_value = 1.0
