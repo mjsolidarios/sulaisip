@@ -52,7 +52,7 @@ var nav_left_sensitivity: SpinBox
 var nav_right_sensitivity: SpinBox
 var nav_top_down_sensitivity: SpinBox
 var nav_z_sensitivity: SpinBox
-var mental_command_sensitivity: SpinBox
+var nav_speed: SpinBox
 
 func _array_to_string(arr: Array) -> String:
 	var s = ""
@@ -192,7 +192,7 @@ func _ready():
 	stable_location = $PanelSettings/Panel/MarginContainer/VBoxContainer/SpinBoxMotionEq
 	nav_left_sensitivity = $PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer/SpinBoxNavL
 	nav_right_sensitivity = $PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer/SpinBoxNavR
-	mental_command_sensitivity = $PanelSettings/Panel/MarginContainer/VBoxContainer/SpinBoxMentalCom
+	nav_speed = $PanelSettings/Panel/MarginContainer/VBoxContainer/SpinBoxNavSpeed
 	nav_top_down_sensitivity = $PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer/SpinBoxNavTD
 	nav_z_sensitivity = $PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer/SpinBoxNavZ
 	
@@ -339,6 +339,14 @@ func _process(delta):
 	# Left and right sensor box
 	$HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3DLeft.position = Vector3(nav_left_sensitivity.value,0.83,0)
 	$HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3DRight.position = Vector3(nav_right_sensitivity.value*-1,0.83,0)
+	
+	# Top and bottom sensor box
+
+	$HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3DTop.position = Vector3(0,nav_top_down_sensitivity.value,0)
+	$HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3DBottom.position = Vector3(0,nav_top_down_sensitivity.value,0)
+	
+	# Nav speed timer
+	$Timer.wait_time = nav_speed.value
 	
 	var current_text: String = $HBoxContainer/VBoxContainer/TextEdit.text
 	var word_counter: int = 0

@@ -277,15 +277,16 @@ render_target_update_mode = 4
 [node name="Node3D" type="Node3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport"]
 
 [node name="Camera3D" type="Camera3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -0.01, 0, -5.275)
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -0.01, -0.326, -5.275)
 v_offset = 0.825
+projection = 1
+current = true
 fov = 83.5
-size = 1.5
+size = 2.5
 
-[node name="Camera3D2" type="Camera3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D"]
+[node name="Camera3DSide" type="Camera3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D"]
 transform = Transform3D(-0.848824, 0, 0.528675, 0, 1, 0, -0.528675, 0, -0.848824, 3.776, 0, -5.275)
 v_offset = 0.825
-current = true
 fov = 22.1
 size = 1.5
 
@@ -358,6 +359,7 @@ shape = SubResource("BoxShape3D_a2wy7")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3DRight"]
 transform = Transform3D(1.0323, 0, 0, 0, -0.271833, 8.74228e-08, 0, -2.37644e-08, -1, -0.636432, 0.360497, 1.92264)
+visible = false
 mesh = SubResource("QuadMesh_inoid")
 skeleton = NodePath("../../Area3DCenter")
 
@@ -370,6 +372,7 @@ shape = SubResource("BoxShape3D_a2wy7")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3DLeft"]
 transform = Transform3D(1.04328, 0, 0, 0, -0.271833, 8.74228e-08, 0, -2.37644e-08, -1, 0.642008, 0.360497, 1.92264)
+visible = false
 mesh = SubResource("QuadMesh_inoid")
 
 [node name="Area3DCenter" type="Area3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D"]
@@ -377,6 +380,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.83239, 0)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3DCenter"]
 transform = Transform3D(0.0824726, 0, 0, 0, -1, 1.94718e-07, 0, -8.74228e-08, -2.22732, 0.000225902, 0, 1.92346)
+visible = false
 mesh = SubResource("QuadMesh_ujrmg")
 skeleton = NodePath("../../Area3DRight")
 
@@ -385,17 +389,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00122172, 0.285727, 0.84819
 shape = SubResource("BoxShape3D_ck8d3")
 
 [node name="Area3DTop" type="Area3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.83239, -0.952748)
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3DTop"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00122172, -0.44697, 0.84819)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.001, 0.524666, -0.105974)
 shape = SubResource("BoxShape3D_3ctc4")
 
 [node name="Area3DBottom" type="Area3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.83239, -0.952748)
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="HBoxContainer/Panel/SubViewportContainer/SubViewport/Node3D/Area3DBottom"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00122172, -1.06313, 0.84819)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00122172, -0.0258404, -0.11389)
 shape = SubResource("BoxShape3D_3ctc4")
 
 [node name="HTTPRequest" type="HTTPRequest" parent="."]
@@ -407,7 +409,6 @@ wait_time = 1.5
 one_shot = true
 
 [node name="PanelSettings" type="Panel" parent="."]
-visible = false
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 1
 anchors_preset = 15
@@ -477,16 +478,15 @@ max_value = 1.0
 step = 0.01
 prefix = "+X"
 
-[node name="SpinBoxNavTD" type="SpinBox" parent="PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="SpinBoxNavZ" type="SpinBox" parent="PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-min_value = -10.0
-max_value = 10.0
+min_value = -1.0
+max_value = 1.0
 step = 0.1
-value = 1.0
 prefix = "Y"
 
-[node name="SpinBoxNavZ" type="SpinBox" parent="PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="SpinBoxNavTD" type="SpinBox" parent="PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = -1.0
@@ -505,16 +505,15 @@ max_value = 1.0
 step = 0.1
 
 [node name="Label2" type="Label" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
-visible = false
 layout_mode = 2
-text = "Mental Command Sensitivity"
+text = "Navigation Speed"
 
-[node name="SpinBoxMentalCom" type="SpinBox" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
-visible = false
+[node name="SpinBoxNavSpeed" type="SpinBox" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-min_value = -1.0
-max_value = 1.0
+min_value = -3.0
+max_value = 3.0
 step = 0.1
+value = 1.5
 
 [node name="Control" type="Control" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 10)
