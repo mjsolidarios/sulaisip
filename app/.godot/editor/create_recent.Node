@@ -1,3 +1,4 @@
+Area3D
 MeshInstance3D
 Control
 Button
@@ -10,7 +11,6 @@ HBoxContainer
 MarginContainer
 VBoxContainer
 PopupPanel
-Area3D
 CharacterBody3D
 CollisionShape3D
 LightmapGI

@@ -51,6 +51,7 @@ var stable_location:  SpinBox #SpinBoxMotionEq
 var nav_left_sensitivity: SpinBox
 var nav_right_sensitivity: SpinBox
 var nav_top_down_sensitivity: SpinBox
+var nav_z_sensitivity: SpinBox
 var mental_command_sensitivity: SpinBox
 
 func _array_to_string(arr: Array) -> String:
@@ -178,6 +179,9 @@ func _python_server():
 func switch_direction(mode:String="neutral"):
 	active_direction = mode
 
+func switch_group(mode:String="top"):
+	active_group=mode
+
 func _ready():
 
 	_wsclient.connect_to_url(websocket_url)
@@ -190,6 +194,7 @@ func _ready():
 	nav_right_sensitivity = $PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer/SpinBoxNavR
 	mental_command_sensitivity = $PanelSettings/Panel/MarginContainer/VBoxContainer/SpinBoxMentalCom
 	nav_top_down_sensitivity = $PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer/SpinBoxNavTD
+	nav_z_sensitivity = $PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer/SpinBoxNavZ
 	
 	$PanelSettings.visible = false
 	
@@ -434,7 +439,7 @@ func _wsondata():
 	var correction = stable_location.value
 
 	gyro = Vector3(gX, gY, gZ)
-	acce = Vector3(aX-correction, aY-correction, aZ)
+	acce = Vector3(aX-correction, aY-correction-nav_z_sensitivity.value, aZ)
 	mag = Vector3(mX, mY, mZ)
 
 	if smile == 100:
@@ -464,10 +469,10 @@ func _wsondata():
 #	var pitch = atan2(gX, -gZ)
 #	yaw = yaw * 0.98 + roll * 0.02
 
-	if rollupdown > nav_top_down_sensitivity.value * 100:
-		active_group = "bottom"
-	else:
-		active_group = "top"
+#	if rollupdown > nav_top_down_sensitivity.value * 100:
+#		active_group = "bottom"
+#	else:
+#		active_group = "top"
 
 #	if !(yaw + threshhold == last_rotation + threshhold):
 	if active_direction != "neutral":
@@ -615,3 +620,11 @@ func _on_button_settings_pressed():
 func _on_button_settings_2_pressed():
 	$HBoxContainer/VBoxContainer/TextEdit.text = " "
 	_predict_next_character()
+
+
+func _on_area_3d_top_area_entered(area):
+	switch_group("top")
+
+
+func _on_area_3d_bottom_area_entered(area):
+	switch_group("bottom")
