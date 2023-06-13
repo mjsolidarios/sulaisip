@@ -427,9 +427,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -250.0
-offset_top = -150.0
+offset_top = -181.0
 offset_right = 250.0
-offset_bottom = 150.0
+offset_bottom = 181.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_afns3")
@@ -481,8 +481,8 @@ prefix = "+X"
 [node name="SpinBoxNavZ" type="SpinBox" parent="PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-min_value = -1.0
-max_value = 1.0
+min_value = -3.0
+max_value = 3.0
 step = 0.1
 prefix = "Y"
 
@@ -514,6 +514,17 @@ min_value = -3.0
 max_value = 3.0
 step = 0.1
 value = 1.5
+
+[node name="Label5" type="Label" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Button Press Speed"
+
+[node name="SpinBoxButtonPressSpeed" type="SpinBox" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+min_value = -3.0
+max_value = 3.0
+step = 0.1
+value = 1.0
 
 [node name="Control" type="Control" parent="PanelSettings/Panel/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 10)

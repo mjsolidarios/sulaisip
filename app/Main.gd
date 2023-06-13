@@ -53,6 +53,7 @@ var nav_right_sensitivity: SpinBox
 var nav_top_down_sensitivity: SpinBox
 var nav_z_sensitivity: SpinBox
 var nav_speed: SpinBox
+var press_speed: SpinBox
 
 func _array_to_string(arr: Array) -> String:
 	var s = ""
@@ -195,7 +196,7 @@ func _ready():
 	nav_speed = $PanelSettings/Panel/MarginContainer/VBoxContainer/SpinBoxNavSpeed
 	nav_top_down_sensitivity = $PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer/SpinBoxNavTD
 	nav_z_sensitivity = $PanelSettings/Panel/MarginContainer/VBoxContainer/HBoxContainer/SpinBoxNavZ
-	
+	press_speed = $PanelSettings/Panel/MarginContainer/VBoxContainer/SpinBoxButtonPressSpeed
 	$PanelSettings.visible = false
 	
 	var file = FileAccess.open("res://data/character_rankings.json", FileAccess.READ)
@@ -347,6 +348,9 @@ func _process(delta):
 	
 	# Nav speed timer
 	$Timer.wait_time = nav_speed.value
+	
+	# Button speed timer
+	$TimerPressButton.wait_time = press_speed.value
 	
 	var current_text: String = $HBoxContainer/VBoxContainer/TextEdit.text
 	var word_counter: int = 0
