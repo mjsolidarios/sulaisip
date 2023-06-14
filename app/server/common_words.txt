@@ -55,6 +55,7 @@ ilagay
 tahanan
 basahin
 kamay
+kamusta
 port
 malaki
 oras ng paggawa
