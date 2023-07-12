@@ -16,6 +16,7 @@ var thread
 
 @export var websocket_url = "ws://127.0.0.1:1880/data"
 var _wsclient = WebSocketPeer.new()
+@export var icon_clear: Texture2D
 @export var icon_del: Texture2D
 @export var icon_prev: Texture2D
 @export var icon_next: Texture2D
@@ -107,6 +108,10 @@ func _del_char():
 		$HBoxContainer/VBoxContainer/TextEdit.text = text.substr(0, text.length() - 1)
 	_predict_next_character()
 
+func _clear_char():
+	$HBoxContainer/VBoxContainer/TextEdit.text = " "
+	_predict_next_character()
+
 func _create_control_button(_type):
 	var button = CharacterButton.instantiate()
 	button.text = ""
@@ -120,6 +125,9 @@ func _create_control_button(_type):
 	if _type == "del":
 		button.texture_icon = icon_del
 		button.get_node("TextureButton").connect("pressed",Callable(self,"_del_char"))
+	if _type == "clear":
+		button.texture_icon = icon_clear
+		button.get_node("TextureButton").connect("pressed",Callable(self,"_clear_char"))
 	char_grid.add_child(button)
 
 func _populate_character_grid():
@@ -145,6 +153,7 @@ func _populate_character_grid():
 			_create_instanced_button(i)
 		_create_control_button("next")
 		_create_control_button("del")
+		_create_control_button("clear")
 	if current_page == 1:
 		_create_control_button("prev")
 		for i in character_bucket.substr(5, 5):
@@ -152,6 +161,7 @@ func _populate_character_grid():
 			_create_instanced_button(i)
 		_create_control_button("next")
 		_create_control_button("del")
+		_create_control_button("clear")
 	if current_page == 2:
 		_create_control_button("prev")
 		for i in character_bucket.substr(10, 5):
@@ -159,6 +169,7 @@ func _populate_character_grid():
 			_create_instanced_button(i)
 		_create_control_button("next")
 		_create_control_button("del")
+		_create_control_button("clear")
 	if current_page == 3:
 		_create_control_button("prev")
 		for i in character_bucket.substr(15, 5):
@@ -166,6 +177,7 @@ func _populate_character_grid():
 			_create_instanced_button(i)
 		_create_control_button("next")
 		_create_control_button("del")
+		_create_control_button("clear")
 	if current_page >= 4:
 		_create_control_button("prev")
 		for i in character_bucket.substr(20, 5):
@@ -173,6 +185,7 @@ func _populate_character_grid():
 			_create_instanced_button(i)
 		_create_control_button("next")
 		_create_control_button("del")
+		_create_control_button("clear")
 
 func _python_server():
 	OS.execute("run_server.bat", [])
@@ -630,8 +643,7 @@ func _on_button_settings_pressed():
 
 
 func _on_button_settings_2_pressed():
-	$HBoxContainer/VBoxContainer/TextEdit.text = " "
-	_predict_next_character()
+	_clear_char()
 
 
 func _on_area_3d_top_area_entered(area):

@@ -1,7 +1,8 @@
-[gd_scene load_steps=30 format=3 uid="uid://6ntcukqhlh6s"]
+[gd_scene load_steps=31 format=3 uid="uid://6ntcukqhlh6s"]
 
 [ext_resource type="Script" path="res://Main.gd" id="1"]
 [ext_resource type="FontFile" uid="uid://cgj5sujadlj8c" path="res://fonts/Roboto-Regular.ttf" id="2"]
+[ext_resource type="Texture2D" uid="uid://dcmopoocovv5t" path="res://images/clear.png" id="2_fpwse"]
 [ext_resource type="Script" path="res://NavContainer.gd" id="4"]
 [ext_resource type="Texture2D" uid="uid://cqqos7aa3urr4" path="res://images/rect.png" id="5"]
 [ext_resource type="Script" path="res://NinePatchRectPanel.gd" id="6"]
@@ -98,6 +99,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
 nlp_server_url = "http://127.0.0.1:5000"
+icon_clear = ExtResource("2_fpwse")
 icon_del = ExtResource("8")
 icon_prev = ExtResource("10")
 icon_next = ExtResource("9")
@@ -186,7 +188,7 @@ script = ExtResource("4")
 [node name="GridContainer" type="GridContainer" parent="HBoxContainer/VBoxContainer/NinePatchRect2/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-columns = 8
+columns = 9
 
 [node name="Control" type="Control" parent="HBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 5)
@@ -409,6 +411,7 @@ wait_time = 1.5
 one_shot = true
 
 [node name="PanelSettings" type="Panel" parent="."]
+visible = false
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 1
 anchors_preset = 15
