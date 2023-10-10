@@ -12,8 +12,11 @@ config_version=5
 
 config/name="Sulaisip"
 run/main_scene="res://Main.tscn"
-config/features=PackedStringArray("4.0")
+config/features=PackedStringArray("4.1")
+boot_splash/image="res://icon.png"
+boot_splash/fullsize=false
 config/icon="res://icon.png"
+boot_splash/minimum_display_time=1000
 
 [display]
 

@@ -554,7 +554,8 @@ func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 	
 	if $HBoxContainer/VBoxContainer/TextEdit.text.length() != 0:
 		if str(json).length()>0:
-			next_characters = json['nextCharacters']
+			if json != null:
+				next_characters = json['nextCharacters']
 
 	if $HBoxContainer/VBoxContainer/TextEdit.text.length() != 0:
 		# print(json.result['wordList'])
